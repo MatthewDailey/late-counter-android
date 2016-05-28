@@ -22,7 +22,7 @@ public class LateCounterPrefs {
 
     public void incrementLateCount() {
         int lateCount = getTodaysLateCount();
-        getPrefs().edit().putInt(TODAYS_LATE_COUNT, lateCount + 1);
+        getPrefs().edit().putInt(TODAYS_LATE_COUNT, lateCount + 1).apply();
     }
 
     public void clearLateCount() {
