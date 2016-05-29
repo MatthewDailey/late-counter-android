@@ -1,5 +1,6 @@
 package com.reactiverobot.latecounter;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -8,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import java.util.Calendar;
 
 public class CounterWidget extends AppWidgetProvider {
 
@@ -50,6 +53,8 @@ public class CounterWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
+        Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
+
         if (intent != null && intent.getAction() != null && intent.getAction().equals(INCREMENT_COUNT)) {
             Log.d("LateCounter-Widget", "Received increment broadcast.");
             new LateCounterPrefs(context).incrementLateCount();
@@ -60,6 +65,28 @@ public class CounterWidget extends AppWidgetProvider {
             int[] ids = {appWidgetId};
 
             onUpdate(context, AppWidgetManager.getInstance(context), ids);
+
+
+            scheduleUpdateAtMidnight(context);
         }
+    }
+
+    private void scheduleUpdateAtMidnight(Context context) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 1);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+        Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
+        updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, 32342,
+                updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), broadcastIntent);
     }
 }
