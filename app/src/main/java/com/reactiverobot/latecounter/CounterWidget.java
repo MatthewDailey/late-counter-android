@@ -54,24 +54,29 @@ public class CounterWidget extends AppWidgetProvider {
         super.onReceive(context, intent);
 
         Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(INCREMENT_COUNT)){
+                Log.d("LateCounter-Widget", "Received increment broadcast.");
+                new LateCounterPrefs(context).incrementLateCount();
 
-        if (intent != null && intent.getAction() != null && intent.getAction().equals(INCREMENT_COUNT)) {
-            Log.d("LateCounter-Widget", "Received increment broadcast.");
-            new LateCounterPrefs(context).incrementLateCount();
+                Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
 
-            Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
-
-            int appWidgetId = intent.getFlags();
-            int[] ids = {appWidgetId};
-
-            onUpdate(context, AppWidgetManager.getInstance(context), ids);
-
-
-            scheduleUpdateAtMidnight(context);
+                updateWidgetFromIntentFlags(context, intent);
+                scheduleUpdateAtMidnight(context, intent.getFlags());
+            } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+                updateWidgetFromIntentFlags(context, intent);
+            }
         }
     }
 
-    private void scheduleUpdateAtMidnight(Context context) {
+    // TODO This method is dumb. Use extras instead of flags.
+    private void updateWidgetFromIntentFlags(Context context, Intent intent) {
+        int appWidgetId = intent.getFlags();
+        int[] ids = {appWidgetId};
+        onUpdate(context, AppWidgetManager.getInstance(context), ids);
+    }
+
+    private void scheduleUpdateAtMidnight(Context context, int widgetId) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.SECOND, 1);
@@ -82,11 +87,14 @@ public class CounterWidget extends AppWidgetProvider {
         Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
         updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 
+        // TODO: Note that we use flags as a hacky way to pass an int. This should be fixed.
+        updateAtMidnightIntent.addFlags(widgetId);
+
         PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, 32342,
                 updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), broadcastIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcastIntent);
     }
 }
