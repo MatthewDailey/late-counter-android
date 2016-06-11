@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.Calendar;
 
 public class CounterWidget extends AppWidgetProvider {
@@ -53,16 +55,19 @@ public class CounterWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-        Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
-        if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(INCREMENT_COUNT)){
-                Log.d("LateCounter-Widget", "Received increment broadcast.");
-                new LateCounterPrefs(context).incrementLateCount();
+                Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
+                if (intent != null && intent.getAction() != null) {
+                    if (intent.getAction().equals(INCREMENT_COUNT)){
+                        Log.d("LateCounter-Widget", "Received increment broadcast.");
+                        new LateCounterPrefs(context).incrementLateCount();
 
-                Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
+                        Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
 
-                updateWidgetFromIntentFlags(context, intent);
-                scheduleUpdateAtMidnight(context, intent.getFlags());
+                        updateWidgetFromIntentFlags(context, intent);
+                        scheduleUpdateAtMidnight(context, intent.getFlags());
+
+                        FirebaseAnalytics.getInstance(context).logEvent("report_late", null);
+
             } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
                 updateWidgetFromIntentFlags(context, intent);
             }

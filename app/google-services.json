@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "876713920714",
+    "firebase_url": "https://late-counter.firebaseio.com",
+    "project_id": "late-counter",
+    "storage_bucket": "late-counter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876713920714:android:779d042040f15f92",
+        "android_client_info": {
+          "package_name": "com.reactiverobot.latecounter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "876713920714-mtuib1dimb6d9v2q28bj3balltkj4ova.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW78y05JaEbOyUYqBZQm3WMqPYC54nGvs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
