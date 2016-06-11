@@ -10,28 +10,28 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-
 import java.util.Calendar;
 
 public class CounterWidget extends AppWidgetProvider {
 
     public static final String INCREMENT_COUNT = "increment_late_count";
     public static final String UPDATE_COUNTER = "update_counter";
+    public static final String WIDGET_ID = "widget_id";
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
         Log.d("LateCounter-Widget", "Called onUpdate for " + N + " widgets");
         // Perform this loop procedure for each App Widget that belongs to this provider
-        for (int i = 0; i < N; i++) {
-            Log.d("LateCounter-Widget", "Updating " + i);
-            int appWidgetId = appWidgetIds[i];
+        for (int widgetIndex = 0; widgetIndex < N; widgetIndex++) {
+            int widgetId = appWidgetIds[widgetIndex];
+            Log.d("LateCounter-Widget", "Updating widget index: " + widgetIndex + " with id: " +
+                    widgetId);
 
             // Create an Intent to launch ExampleActivity
             Intent intent = new Intent(context, CounterWidget.class);
             intent.setAction(INCREMENT_COUNT);
-            intent.addFlags(appWidgetId);
-            PendingIntent incrementIntent = PendingIntent.getBroadcast(context, appWidgetId, intent,
+            intent.putExtra(WIDGET_ID, widgetId);
+            PendingIntent incrementIntent = PendingIntent.getBroadcast(context, widgetId, intent,
                     PendingIntent.FLAG_CANCEL_CURRENT);
 
             int todaysLateCount = new LateCounterPrefs(context).getTodaysLateCount();
@@ -47,7 +47,7 @@ public class CounterWidget extends AppWidgetProvider {
 
             // Tell the AppWidgetManager to perform an update on the current app widget
             // (mdailey) Note that we must pass the actually widget component name rather than id.
-            ComponentName thisWidget = new ComponentName(context, CounterWidget.class );
+            ComponentName thisWidget = new ComponentName(context, CounterWidget.class);
             appWidgetManager.updateAppWidget(thisWidget, views);
         }
     }
@@ -58,27 +58,25 @@ public class CounterWidget extends AppWidgetProvider {
 
         Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
 
-        if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals(INCREMENT_COUNT)){
-                Log.d("LateCounter-Widget", "Received increment broadcast.");
-                new LateCounterPrefs(context).incrementLateCount();
-
-                Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
-
-                updateWidgetFromIntentFlags(context, intent);
-                scheduleUpdateAtMidnight(context, intent.getFlags());
-
-                FirebaseAnalytics.getInstance(context).logEvent("report_late", null);
-
-            } else if (intent.getAction().equals(UPDATE_COUNTER)) {
-                updateWidgetFromIntentFlags(context, intent);
-            }
+        if (intent != null && intent.getAction() != null && intent.hasExtra(WIDGET_ID)) {
+            handleActionForWidget(context, intent.getAction(), intent.getIntExtra(WIDGET_ID, -1));
         }
     }
 
-    // TODO This method is dumb. Use extras instead of flags.
-    private void updateWidgetFromIntentFlags(Context context, Intent intent) {
-        int appWidgetId = intent.getFlags();
+    private void handleActionForWidget(Context context, String action, int widgetId) {
+        if (action.equals(INCREMENT_COUNT)) {
+            Log.d("LateCounter-Widget", "Received increment broadcast.");
+            new LateCounterPrefs(context).incrementLateCount();
+            Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
+
+            updateWidgetFromIntentFlags(context, widgetId);
+            scheduleUpdateAtMidnight(context, widgetId);
+        } else if (action.equals(UPDATE_COUNTER)) {
+            updateWidgetFromIntentFlags(context, widgetId);
+        }
+    }
+
+    private void updateWidgetFromIntentFlags(Context context, int appWidgetId) {
         int[] ids = {appWidgetId};
         onUpdate(context, AppWidgetManager.getInstance(context), ids);
     }
@@ -93,9 +91,7 @@ public class CounterWidget extends AppWidgetProvider {
 
         Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
         updateAtMidnightIntent.setAction(UPDATE_COUNTER);
-
-        // TODO: Note that we use flags as a hacky way to pass an int. This should be fixed.
-        updateAtMidnightIntent.addFlags(widgetId);
+        updateAtMidnightIntent.putExtra(WIDGET_ID, widgetId);
 
         PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, 32342,
                 updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
