@@ -17,6 +17,7 @@ import java.util.Calendar;
 public class CounterWidget extends AppWidgetProvider {
 
     public static final String INCREMENT_COUNT = "increment_late_count";
+    public static final String UPDATE_COUNTER = "update_counter";
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
@@ -55,20 +56,21 @@ public class CounterWidget extends AppWidgetProvider {
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
 
-                Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
-                if (intent != null && intent.getAction() != null) {
-                    if (intent.getAction().equals(INCREMENT_COUNT)){
-                        Log.d("LateCounter-Widget", "Received increment broadcast.");
-                        new LateCounterPrefs(context).incrementLateCount();
+        Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
 
-                        Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(INCREMENT_COUNT)){
+                Log.d("LateCounter-Widget", "Received increment broadcast.");
+                new LateCounterPrefs(context).incrementLateCount();
 
-                        updateWidgetFromIntentFlags(context, intent);
-                        scheduleUpdateAtMidnight(context, intent.getFlags());
+                Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
 
-                        FirebaseAnalytics.getInstance(context).logEvent("report_late", null);
+                updateWidgetFromIntentFlags(context, intent);
+                scheduleUpdateAtMidnight(context, intent.getFlags());
 
-            } else if (intent.getAction().equals(AppWidgetManager.ACTION_APPWIDGET_UPDATE)) {
+                FirebaseAnalytics.getInstance(context).logEvent("report_late", null);
+
+            } else if (intent.getAction().equals(UPDATE_COUNTER)) {
                 updateWidgetFromIntentFlags(context, intent);
             }
         }
@@ -90,7 +92,7 @@ public class CounterWidget extends AppWidgetProvider {
         calendar.add(Calendar.DAY_OF_YEAR, 1);
 
         Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
-        updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        updateAtMidnightIntent.setAction(UPDATE_COUNTER);
 
         // TODO: Note that we use flags as a hacky way to pass an int. This should be fixed.
         updateAtMidnightIntent.addFlags(widgetId);
