@@ -1,55 +1,28 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.reactiverobot.latecounter.model.CounterDailyRecord;
+import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.model.CounterTypes;
 
-import java.util.Date;
-
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
+import roboguice.activity.RoboActionBarActivity;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends RoboActionBarActivity {
 
     private static final String TAG = "LateCounter-Activity";
+
+    @Inject
+    CounterTypes counterTypes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RealmConfiguration config = new RealmConfiguration.Builder(this)
-                .name("basicRalmConfig")
-                .schemaVersion(1)
-                .build();
-
-        Realm realmDb = Realm.getInstance(config);
-
-        realmDb.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                CounterDailyRecord dailyRecord = realm.createObject(CounterDailyRecord.class);
-                dailyRecord.setCount(1);
-                dailyRecord.setDate(new Date());
-                dailyRecord.setCounterType("cool-count");
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "Successfully stored daily record");
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
-                Log.e(TAG, "Error storing record! " + error);
-            }
-        });
-
+        counterTypes.create("simple type");
     }
 
     @Override

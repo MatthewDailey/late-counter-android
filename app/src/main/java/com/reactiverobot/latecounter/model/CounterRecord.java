@@ -4,19 +4,11 @@ import java.util.Date;
 
 import io.realm.RealmObject;
 
-public class CounterDailyRecord extends RealmObject {
+public class CounterRecord extends RealmObject {
 
-    private String counterType;
     private Date date;
     private int count;
-
-    public String getCounterType() {
-        return counterType;
-    }
-
-    public void setCounterType(String counterType) {
-        this.counterType = counterType;
-    }
+    private CounterType counterType;
 
     public Date getDate() {
         return date;
@@ -32,5 +24,13 @@ public class CounterDailyRecord extends RealmObject {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public CounterType getCounterType() {
+        return counterType;
+    }
+
+    public void setCounterType(CounterType counterType) {
+        this.counterType = counterType;
     }
 }
