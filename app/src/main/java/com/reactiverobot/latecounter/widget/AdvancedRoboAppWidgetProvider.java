@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter.roboguice;
+package com.reactiverobot.latecounter.widget;
 
 import android.app.Application;
 import android.content.Context;
@@ -13,7 +13,7 @@ import roboguice.receiver.RoboAppWidgetProvider;
  * Expanded Roboguice {@link android.appwidget.AppWidgetProvider} to include more methods than just
  * the <em>onUpdate</em>.
  */
-public abstract class AdvancedRoboAppWidgetProvider extends RoboAppWidgetProvider {
+abstract class AdvancedRoboAppWidgetProvider extends RoboAppWidgetProvider {
 
     private void doInjection(Context context) {
         final Injector injector = RoboGuice.getOrCreateBaseApplicationInjector(

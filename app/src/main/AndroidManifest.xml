@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="CounterWidget" >
+        <receiver android:name=".widget.CounterWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

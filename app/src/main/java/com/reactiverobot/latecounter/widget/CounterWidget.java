@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter;
+package com.reactiverobot.latecounter.widget;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -10,8 +10,8 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
+import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
-import com.reactiverobot.latecounter.roboguice.AdvancedRoboAppWidgetProvider;
 
 import java.util.Calendar;
 
