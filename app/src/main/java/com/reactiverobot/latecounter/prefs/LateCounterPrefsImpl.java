@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter.roboguice;
+package com.reactiverobot.latecounter.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,6 @@ import android.util.Pair;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
-import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;

@@ -10,7 +10,7 @@
 
         <meta-data
             android:name="roboguice.modules"
-            android:value="com.reactiverobot.latecounter.roboguice.LateCounterInjectionModule" />
+            android:value="com.reactiverobot.latecounter.prefs.PrefsModule" />
 
         <activity
             android:name=".activity.MainActivity"

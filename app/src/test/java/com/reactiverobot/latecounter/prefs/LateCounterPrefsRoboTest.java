@@ -3,8 +3,6 @@ package com.reactiverobot.latecounter.prefs;
 import android.app.Application;
 
 import com.reactiverobot.latecounter.BuildConfig;
-import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
-import com.reactiverobot.latecounter.roboguice.LateCounterInjectionModule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +30,7 @@ public class LateCounterPrefsRoboTest {
         context = RuntimeEnvironment.application;
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
-                new LateCounterInjectionModule());
+                new PrefsModule() /* note that modules can be chained here */);
 
         instance = RoboGuice.getInjector(context).getInstance(LateCounterPrefs.class);
     }

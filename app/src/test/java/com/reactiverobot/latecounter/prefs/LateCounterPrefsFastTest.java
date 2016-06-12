@@ -1,9 +1,7 @@
-package com.reactiverobot.latecounter.roboguice;
+package com.reactiverobot.latecounter.prefs;
 
 
 import android.content.Context;
-
-import com.reactiverobot.latecounter.roboguice.LateCounterPrefsImpl;
 
 import org.junit.Test;
 
