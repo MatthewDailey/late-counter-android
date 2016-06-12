@@ -7,23 +7,23 @@ import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.google.inject.Inject;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class LateCounterPrefs {
+public class LateCounterPrefs implements ILateCounterPrefs {
 
     public static final String TODAYS_LATE_COUNT_PREF = "todays_late_count";
     private static final String TODAY_STRING_PREF = "today_string";
 
     private final Context context;
 
+    @Inject
     public LateCounterPrefs(Context context) {
         this.context = context;
     }
