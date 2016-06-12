@@ -3,22 +3,26 @@ package com.reactiverobot.latecounter;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.google.inject.Inject;
+import com.reactiverobot.latecounter.roboguice.AdvancedRoboAppWidgetProvider;
+
 import java.util.Calendar;
 
-public class CounterWidget extends AppWidgetProvider {
+public class CounterWidget extends AdvancedRoboAppWidgetProvider {
 
     public static final String INCREMENT_COUNT = "increment_late_count";
     public static final String UPDATE_COUNTER = "update_counter";
     public static final String WIDGET_ID = "widget_id";
 
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    @Inject ILateCounterPrefs prefs;
+
+    public void onHandleUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
         Log.d("LateCounter-Widget", "Called onUpdate for " + N + " widgets");
         // Perform this loop procedure for each App Widget that belongs to this provider
@@ -34,7 +38,7 @@ public class CounterWidget extends AppWidgetProvider {
             PendingIntent incrementIntent = PendingIntent.getBroadcast(context, widgetId, intent,
                     PendingIntent.FLAG_CANCEL_CURRENT);
 
-            int todaysLateCount = new LateCounterPrefs(context).getTodaysLateCount();
+            int todaysLateCount = prefs.getTodaysLateCount();
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
@@ -52,10 +56,7 @@ public class CounterWidget extends AppWidgetProvider {
         }
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-
+    public void onHandleReceived(Context context, Intent intent) {
         Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
 
         if (intent != null && intent.getAction() != null && intent.hasExtra(WIDGET_ID)) {
@@ -66,8 +67,8 @@ public class CounterWidget extends AppWidgetProvider {
     private void handleActionForWidget(Context context, String action, int widgetId) {
         if (action.equals(INCREMENT_COUNT)) {
             Log.d("LateCounter-Widget", "Received increment broadcast.");
-            new LateCounterPrefs(context).incrementLateCount();
-            Log.d("LateCounter-Widget", "Count : " + new LateCounterPrefs(context).getTodaysLateCount());
+            prefs.incrementLateCount();
+            Log.d("LateCounter-Widget", "Count : " + prefs.getTodaysLateCount());
 
             updateWidgetFromIntentFlags(context, widgetId);
             scheduleUpdateAtMidnight(context, widgetId);
