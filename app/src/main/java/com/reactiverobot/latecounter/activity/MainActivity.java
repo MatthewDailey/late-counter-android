@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.reactiverobot.latecounter.CounterDailyRecord;
+import com.reactiverobot.latecounter.model.CounterDailyRecord;
 import com.reactiverobot.latecounter.R;
 
 import java.util.Date;

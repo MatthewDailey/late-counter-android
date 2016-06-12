@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter;
+package com.reactiverobot.latecounter.model;
 
 import java.util.Date;
 
