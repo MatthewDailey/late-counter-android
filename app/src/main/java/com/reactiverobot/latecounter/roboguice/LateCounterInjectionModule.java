@@ -2,7 +2,6 @@ package com.reactiverobot.latecounter.roboguice;
 
 import com.google.inject.AbstractModule;
 import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
-import com.reactiverobot.latecounter.prefs.LateCounterPrefsImpl;
 
 /*
  * Note that for tests this in manually bound in the set up but for applications it is bound

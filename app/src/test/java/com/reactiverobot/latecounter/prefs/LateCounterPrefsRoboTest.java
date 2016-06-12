@@ -1,7 +1,8 @@
-package com.reactiverobot.latecounter;
+package com.reactiverobot.latecounter.prefs;
 
 import android.app.Application;
 
+import com.reactiverobot.latecounter.BuildConfig;
 import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 import com.reactiverobot.latecounter.roboguice.LateCounterInjectionModule;
 

@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter.prefs;
+package com.reactiverobot.latecounter.roboguice;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,6 +8,7 @@ import android.util.Pair;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -16,7 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class LateCounterPrefsImpl implements LateCounterPrefs {
+class LateCounterPrefsImpl implements LateCounterPrefs {
 
     public static final String TODAYS_LATE_COUNT_PREF = "todays_late_count";
     private static final String TODAY_STRING_PREF = "today_string";
