@@ -3,6 +3,7 @@ package com.reactiverobot.latecounter.model;
 
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import io.realm.Realm;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 
+@PrepareForTest({CounterType.class})
 public class CounterTypeRealmImplFastTest extends RealmMockingTest {
 
     @Test

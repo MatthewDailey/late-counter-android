@@ -14,7 +14,7 @@ import io.realm.Realm;
 import static org.mockito.Matchers.any;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 
-@PrepareForTest({Realm.class, CounterType.class})
+@PrepareForTest({Realm.class})
 public abstract class RealmMockingTest {
 
     @Rule
