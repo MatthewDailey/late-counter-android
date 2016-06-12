@@ -1,8 +1,8 @@
 package com.reactiverobot.latecounter;
 
 import android.app.Application;
-import android.content.Context;
 
+import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 import com.reactiverobot.latecounter.roboguice.LateCounterInjectionModule;
 
 import org.junit.After;
@@ -33,7 +33,7 @@ public class LateCounterPrefsRoboTest {
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application,
                 new LateCounterInjectionModule());
 
-        instance = RoboGuice.getInjector(context).getInstance(ILateCounterPrefs.class);
+        instance = RoboGuice.getInjector(context).getInstance(LateCounterPrefs.class);
     }
 
     @After
@@ -41,7 +41,7 @@ public class LateCounterPrefsRoboTest {
         Robolectric.reset();
     }
 
-    private ILateCounterPrefs instance;
+    private LateCounterPrefs instance;
 
     @Test
     public void testCanGetLateCount() {

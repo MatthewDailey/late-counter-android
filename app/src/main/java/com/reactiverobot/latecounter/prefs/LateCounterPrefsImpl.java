@@ -1,4 +1,4 @@
-package com.reactiverobot.latecounter;
+package com.reactiverobot.latecounter.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class LateCounterPrefs implements ILateCounterPrefs {
+public class LateCounterPrefsImpl implements LateCounterPrefs {
 
     public static final String TODAYS_LATE_COUNT_PREF = "todays_late_count";
     private static final String TODAY_STRING_PREF = "today_string";
@@ -24,7 +24,7 @@ public class LateCounterPrefs implements ILateCounterPrefs {
     private final Context context;
 
     @Inject
-    public LateCounterPrefs(Context context) {
+    public LateCounterPrefsImpl(Context context) {
         this.context = context;
     }
 

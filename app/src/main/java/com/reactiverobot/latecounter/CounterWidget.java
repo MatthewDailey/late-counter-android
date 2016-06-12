@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
+import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 import com.reactiverobot.latecounter.roboguice.AdvancedRoboAppWidgetProvider;
 
 import java.util.Calendar;
@@ -20,7 +21,8 @@ public class CounterWidget extends AdvancedRoboAppWidgetProvider {
     public static final String UPDATE_COUNTER = "update_counter";
     public static final String WIDGET_ID = "widget_id";
 
-    @Inject ILateCounterPrefs prefs;
+    @Inject
+    LateCounterPrefs prefs;
 
     public void onHandleUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
