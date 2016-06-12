@@ -1,28 +1,40 @@
 package com.reactiverobot.latecounter.model;
 
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.inject.Inject;
 
+import org.roboguice.shaded.goole.common.base.Supplier;
+
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
 
 
 class RealmSupplierImpl implements RealmSupplier {
 
-    private final Context context;
+    private final Supplier<Realm> supplier;
 
     @Inject
-    RealmSupplierImpl(Context context) {
-        this.context = context;
+    RealmSupplierImpl(final Context context) {
+        this.supplier = new Supplier<Realm>() {
+            @Override
+            public Realm get() {
+                RealmConfiguration config = new RealmConfiguration.Builder(context).build();
+
+                return Realm.getInstance(config);
+            }
+        };
+    }
+
+    @VisibleForTesting
+    RealmSupplierImpl(Supplier<Realm> testSupplier) {
+        this.supplier = testSupplier;
     }
 
     @Override
     public Realm get() {
-        RealmConfiguration config = new RealmConfiguration.Builder(context).build();
-
-        return Realm.getInstance(config);
+        return supplier.get();
     }
 
     @Override
