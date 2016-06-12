@@ -1,10 +1,13 @@
-package com.reactiverobot.latecounter;
+package com.reactiverobot.latecounter.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.reactiverobot.latecounter.CounterDailyRecord;
+import com.reactiverobot.latecounter.R;
 
 import java.util.Date;
 
