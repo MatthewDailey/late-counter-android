@@ -15,4 +15,11 @@ public class CounterType extends RealmObject {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "CounterType{" +
+                "description='" + description + '\'' +
+                '}';
+    }
 }

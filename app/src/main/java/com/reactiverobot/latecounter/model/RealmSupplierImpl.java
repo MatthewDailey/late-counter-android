@@ -20,7 +20,10 @@ class RealmSupplierImpl implements RealmSupplier {
         this.supplier = new Supplier<Realm>() {
             @Override
             public Realm get() {
-                RealmConfiguration config = new RealmConfiguration.Builder(context).build();
+                RealmConfiguration config = new RealmConfiguration.Builder(context)
+                        .schemaVersion(2)
+                        .deleteRealmIfMigrationNeeded()
+                        .build();
 
                 return Realm.getInstance(config);
             }
