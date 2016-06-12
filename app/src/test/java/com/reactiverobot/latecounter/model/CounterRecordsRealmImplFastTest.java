@@ -1,7 +1,6 @@
 package com.reactiverobot.latecounter.model;
 
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
@@ -15,20 +14,21 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 public class CounterRecordsRealmImplFastTest extends RealmMockingTest {
 
-    private CounterType counterType;
-
-    @Before
-    public void setup() {
-        counterType = mock(CounterType.class);
-    }
-
     @Test
     public void testCreate() {
-        CounterRecords counterRecords = new CounterRecordsRealmImpl(realmSupplier);
+        CounterType counterType = mock(CounterType.class);
+        CounterRecord counterRecord = mock(CounterRecord.class);
 
-        when(realm.createObject(CounterRecord.class)).thenReturn(new CounterRecord());
+        when(realm.createObject(CounterRecord.class)).thenReturn(counterRecord);
 
-        counterRecords.create(counterType, new Date(), 2);
+        Date testDate = new Date();
+        int testCount = 2;
+
+        new CounterRecordsRealmImpl(realmSupplier).create(counterType, testDate, testCount);
+
+        verify(counterRecord).setDate(testDate);
+        verify(counterRecord).setCount(testCount);
+        verify(counterRecord).setCounterType(counterType);
 
         verify(realm).executeTransaction(any(Realm.Transaction.class));
         verify(realm).createObject(CounterRecord.class);
