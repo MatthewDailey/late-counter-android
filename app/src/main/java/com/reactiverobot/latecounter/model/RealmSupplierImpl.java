@@ -49,4 +49,14 @@ class RealmSupplierImpl implements RealmSupplier {
             realm.close();
         }
     }
+
+    @Override
+    public <T> T callWithRealm(RealmCallable<T> realmCallable) {
+        Realm realm = get();
+        try {
+            return realmCallable.call(realm);
+        } finally {
+            realm.close();
+        }
+    }
 }

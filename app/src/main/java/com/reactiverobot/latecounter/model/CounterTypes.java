@@ -2,6 +2,6 @@ package com.reactiverobot.latecounter.model;
 
 
 public interface CounterTypes {
-    void createSafely(String description);
+    CounterType createSafely(String description);
     void dump();
 }

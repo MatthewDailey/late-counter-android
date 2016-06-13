@@ -10,11 +10,13 @@ import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.roboguice.shaded.goole.common.base.Suppliers;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 
-@PrepareForTest({Realm.class})
+@PrepareForTest({Realm.class, RealmResults.class})
 public abstract class RealmMockingTest {
 
     @Rule
@@ -25,7 +27,7 @@ public abstract class RealmMockingTest {
 
     @Before
     public void setupRealmMock() {
-        realm = PowerMockito.mock(Realm.class);
+        realm = PowerMockito.mock(Realm.class, RETURNS_DEEP_STUBS);
 
         realmSupplier = new RealmSupplierImpl(Suppliers.ofInstance(realm));
 

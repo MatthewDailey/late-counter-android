@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.roboguice.shaded.goole.common.base.Throwables;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
@@ -19,22 +21,27 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public void createSafely(final String description) {
-        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+    public CounterType createSafely(final String description) {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
             @Override
-            public void run(Realm realm) {
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        CounterType counterType = realm.createObject(CounterType.class);
+            public CounterType call(Realm realm) {
+                realm.beginTransaction();
+                CounterType counterType = realm.createObject(CounterType.class);
+                try {
+                    counterType.setDescription(description);
 
-                        try {
-                            counterType.setDescription(description);
-                        } catch (RealmPrimaryKeyConstraintException e) {
-                            counterType.deleteFromRealm();
-                        }
-                    }
-                });
+                    realm.commitTransaction();
+
+                    return counterType;
+                } catch (RealmPrimaryKeyConstraintException e) {
+                    counterType.deleteFromRealm();
+                    return realm.where(CounterType.class)
+                            .equalTo("description", description)
+                            .findAll()
+                            .first();
+                } catch (Throwable e) {
+                    throw Throwables.propagate(e);
+                }
             }
         });
     }
