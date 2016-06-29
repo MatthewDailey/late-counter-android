@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
+import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Throwables;
 
 import io.realm.Realm;
@@ -57,6 +58,11 @@ class CounterTypesRealmImpl implements CounterTypes {
                 }
             }
         });
+    }
+
+    @Override
+    public Optional<CounterType> getType(String description) {
+        return Optional.absent();
     }
 
 }
