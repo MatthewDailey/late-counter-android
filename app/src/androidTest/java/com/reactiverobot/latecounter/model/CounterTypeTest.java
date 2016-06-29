@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CounterTypeTest {
 
@@ -22,7 +23,8 @@ public class CounterTypeTest {
     @Test
     public void testCreateCounterType() {
         counterTypes.createSafely("new-type");
-
+        Optional<CounterType> counterTypeOption = counterTypes.getType("new-type");
+        assertTrue(counterTypeOption.isPresent());
     }
 
     @Test
@@ -30,4 +32,5 @@ public class CounterTypeTest {
         Optional<CounterType> counterTypeOption = counterTypes.getType("new-type");
         assertFalse(counterTypeOption.isPresent());
     }
+
 }

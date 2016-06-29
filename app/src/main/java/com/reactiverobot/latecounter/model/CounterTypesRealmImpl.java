@@ -61,8 +61,20 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public Optional<CounterType> getType(String description) {
-        return Optional.absent();
+    public Optional<CounterType> getType(final String description) {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<Optional<CounterType>>() {
+            @Override
+            public Optional<CounterType> call(Realm realm) {
+                RealmResults<CounterType> counterType = realm.where(CounterType.class)
+                        .equalTo("description", description)
+                        .findAll();
+                if (counterType.isEmpty()) {
+                    return Optional.absent();
+                } else {
+                    return Optional.of(counterType.first());
+                }
+            }
+        });
     }
 
 }
