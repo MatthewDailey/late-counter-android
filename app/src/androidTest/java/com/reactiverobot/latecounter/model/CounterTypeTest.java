@@ -33,4 +33,10 @@ public class CounterTypeTest {
         assertFalse(counterTypeOption.isPresent());
     }
 
+    @Test
+    public void testCreateSafely() {
+        counterTypes.createSafely("new-type");
+        counterTypes.createSafely("new-type");
+        assertTrue(counterTypes.getType("new-type").isPresent());
+    }
 }
