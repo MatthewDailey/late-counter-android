@@ -3,8 +3,12 @@ package com.reactiverobot.latecounter.model;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.roboguice.shaded.goole.common.base.Optional;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class CounterTypeTest {
@@ -35,5 +39,12 @@ public class CounterTypeTest {
         counterTypes.createSafely("new-type");
         counterTypes.createSafely("new-type");
         assertTrue(counterTypes.getType("new-type").isPresent());
+    }
+
+    @Test
+    public void testCreateWithWidgetId() {
+        CounterType type = counterTypes.createSafelyWithWidgetId("new-type", 1);
+        Optional<CounterType> typeOptional = counterTypes.getType("new-type");
+        assertThat(type, is(equalTo(typeOptional.get())));
     }
 }

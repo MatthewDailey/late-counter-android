@@ -1,8 +1,6 @@
 package com.reactiverobot.latecounter.model;
 
 
-import android.util.Log;
-
 import com.google.inject.Inject;
 
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -45,13 +43,24 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public void dump() {
-        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+    public CounterType createSafelyWithWidgetId(final String description, final int widgetId) {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
             @Override
-            public void run(Realm realm) {
-                RealmResults<CounterType> counterTypes = realm.where(CounterType.class).findAll();
-                for (CounterType type : counterTypes) {
-                    Log.i("test-load", type.toString());
+            public CounterType call(Realm realm) {
+                realm.beginTransaction();
+                CounterType counterType = realm.createObject(CounterType.class);
+                try {
+                    counterType.setDescription(description);
+                    counterType.setWidgetid(widgetId);
+
+                    realm.commitTransaction();
+
+                    return realm.copyFromRealm(counterType);
+                } catch (RealmPrimaryKeyConstraintException e) {
+                    counterType.deleteFromRealm();
+                    return getType(description).get();
+                } catch (Throwable e) {
+                    throw Throwables.propagate(e);
                 }
             }
         });
@@ -68,7 +77,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                 if (counterType.isEmpty()) {
                     return Optional.absent();
                 } else {
-                    return Optional.of(counterType.first());
+                    return Optional.of(realm.copyFromRealm(counterType.first()));
                 }
             }
         });

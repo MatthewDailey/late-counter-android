@@ -25,8 +25,6 @@ public class MainActivity extends RoboActionBarActivity {
         counterTypes.createSafely("test1");
         counterTypes.createSafely("test1");
         counterTypes.createSafely("test2");
-
-        counterTypes.dump();
     }
 
     @Override

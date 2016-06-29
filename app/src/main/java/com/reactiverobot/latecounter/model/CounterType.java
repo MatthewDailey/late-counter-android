@@ -7,6 +7,7 @@ public class CounterType extends RealmObject {
 
     @PrimaryKey
     private String description;
+    private int widgetid;
 
     public String getDescription() {
         return description;
@@ -14,6 +15,14 @@ public class CounterType extends RealmObject {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getWidgetid() {
+        return widgetid;
+    }
+
+    public void setWidgetid(int widgetid) {
+        this.widgetid = widgetid;
     }
 
     public static CounterType withDescription(String description) {
