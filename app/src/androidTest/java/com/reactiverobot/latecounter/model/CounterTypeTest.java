@@ -47,4 +47,12 @@ public class CounterTypeTest {
         Optional<CounterType> typeOptional = counterTypes.getType("new-type");
         assertThat(type, is(equalTo(typeOptional.get())));
     }
+
+    @Test
+    public void testCreateWithPreExistingWidgetId() {
+        counterTypes.createSafelyWithWidgetId("new-type", 1);
+        counterTypes.createSafelyWithWidgetId("new-type", 2);
+        Optional<CounterType> type = counterTypes.getType("new-type");
+        assertThat(type.get().getWidgetid(), is(equalTo(2)));
+    }
 }

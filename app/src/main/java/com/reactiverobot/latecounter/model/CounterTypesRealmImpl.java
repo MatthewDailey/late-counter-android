@@ -28,12 +28,13 @@ class CounterTypesRealmImpl implements CounterTypes {
                 CounterType counterType = realm.createObject(CounterType.class);
                 try {
                     counterType.setDescription(description);
-
                     realm.commitTransaction();
 
                     return counterType;
                 } catch (RealmPrimaryKeyConstraintException e) {
                     counterType.deleteFromRealm();
+                    realm.commitTransaction();
+
                     return getType(description).get();
                 } catch (Throwable e) {
                     throw Throwables.propagate(e);
@@ -58,7 +59,14 @@ class CounterTypesRealmImpl implements CounterTypes {
                     return realm.copyFromRealm(counterType);
                 } catch (RealmPrimaryKeyConstraintException e) {
                     counterType.deleteFromRealm();
-                    return getType(description).get();
+                    CounterType preExistingType = realm.where(CounterType.class)
+                            .equalTo("description", description)
+                            .findAll()
+                            .first();
+                    preExistingType.setWidgetid(widgetId);
+                    realm.commitTransaction();
+
+                    return realm.copyFromRealm(preExistingType);
                 } catch (Throwable e) {
                     throw Throwables.propagate(e);
                 }
