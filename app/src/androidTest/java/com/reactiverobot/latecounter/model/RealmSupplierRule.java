@@ -1,12 +1,12 @@
 package com.reactiverobot.latecounter.model;
 
-import android.support.test.runner.AndroidJUnit4;
-
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.rules.ExternalResource;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.RunWith;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.roboguice.shaded.goole.common.base.Supplier;
 
 import java.io.File;
@@ -20,16 +20,19 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
-public class RealmTest {
+class RealmSupplierRule extends ExternalResource {
 
-    RealmSupplier realmSupplier;
+    private RealmSupplier realmSupplier;
+    private TemporaryFolder testFolder = new TemporaryFolder();
 
-    @Rule
-    public TemporaryFolder testFolder = new TemporaryFolder();
+    public RealmSupplier getRealmSupplier() {
+        return realmSupplier;
+    }
 
-    @Before
-    public void setupRealm() throws IOException {
+    @Override
+    public void before() throws Throwable {
+        testFolder.create();
+
         File tempFolder = testFolder.newFolder("realmdata");
         final RealmConfiguration config = new RealmConfiguration.Builder(tempFolder)
                 .deleteRealmIfMigrationNeeded()
@@ -43,18 +46,8 @@ public class RealmTest {
         });
     }
 
-    @Test
-    public void testCreateAndQueryRealm() {
-        CounterType counterType = CounterType.withDescription("desc");
-
-        CounterRecordsRealmImpl counterRecords = new CounterRecordsRealmImpl(realmSupplier);
-
-        CounterRecord counterRecordYesterday = counterRecords.create(counterType, new Date(-1), 0);
-
-        CounterRecord counterRecordToday = counterRecords.create(counterType, new Date(), 0);
-
-        CounterRecord todaysCount = counterRecords.getTodaysCount(counterType);
-
-        assertThat(todaysCount, is(equalTo(counterRecordToday)));
+    @Override
+    public void after() {
+        testFolder.delete();
     }
 }
