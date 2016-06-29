@@ -36,10 +36,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                     return counterType;
                 } catch (RealmPrimaryKeyConstraintException e) {
                     counterType.deleteFromRealm();
-                    return realm.where(CounterType.class)
-                            .equalTo("description", description)
-                            .findAll()
-                            .first();
+                    return getType(description).get();
                 } catch (Throwable e) {
                     throw Throwables.propagate(e);
                 }
