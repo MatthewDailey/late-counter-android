@@ -3,6 +3,7 @@ package com.reactiverobot.latecounter.widget;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.prefs.LateCounterPrefs;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class CounterWidget extends AdvancedRoboAppWidgetProvider {
@@ -26,7 +28,11 @@ public class CounterWidget extends AdvancedRoboAppWidgetProvider {
 
     public void onHandleUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         final int N = appWidgetIds.length;
-        Log.d("LateCounter-Widget", "Called onUpdate for " + N + " widgets");
+        Log.d("LateCounter-Widget", "Called onUpdate for " + N + " widgets " + Arrays.toString(appWidgetIds));
+
+        int[] allWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, CounterWidget.class));
+        Log.d("LateCounter-Widget", "onHandleUpdate: All widget ids: " + Arrays.toString(allWidgetIds));
+
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int widgetIndex = 0; widgetIndex < N; widgetIndex++) {
             int widgetId = appWidgetIds[widgetIndex];
@@ -44,31 +50,36 @@ public class CounterWidget extends AdvancedRoboAppWidgetProvider {
 
             // Get the layout for the App Widget and attach an on-click listener
             // to the button
+            // Note that this RemoteViews is for ALL widgets of this time. Which means when we
+            // update the view and the onclick listener for ALL widgets with this layout.
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
             views.setOnClickPendingIntent(R.id.whole_widget, incrementIntent);
 
             views.setTextViewText(R.id.count_text, String.valueOf(todaysLateCount));
             Log.d("LateCounter-Widget", "setting count to " + todaysLateCount);
 
-
-            // Tell the AppWidgetManager to perform an update on the current app widget
-            // (mdailey) Note that we must pass the actually widget component name rather than id.
-            ComponentName thisWidget = new ComponentName(context, CounterWidget.class);
-            appWidgetManager.updateAppWidget(thisWidget, views);
+            // Make sure we only apply the RemoteViews to the widgetId in question. Make sure
+            // to remove and recreate the widget each time you manually test this.
+            appWidgetManager.updateAppWidget(widgetId, views);
         }
     }
 
     public void onHandleReceived(Context context, Intent intent) {
-        Log.d("LateCounter-Widget", "Received intent: " + intent.getAction());
+        Log.d("LateCounter-Widget", "Received intent: " + intent.getAction() + " extras: "
+                + intent.getExtras() + " widgetid: " + intent.getIntExtra(WIDGET_ID, -1));
 
         if (intent != null && intent.getAction() != null && intent.hasExtra(WIDGET_ID)) {
             handleActionForWidget(context, intent.getAction(), intent.getIntExtra(WIDGET_ID, -1));
+        }
+
+        if (intent.getAction().equals("android.appwidget.action.APPWIDGET_UPDATE_OPTIONS")) {
+            Log.d("LateCounter-Widget", "Update " + intent.getExtras().describeContents());
         }
     }
 
     private void handleActionForWidget(Context context, String action, int widgetId) {
         if (action.equals(INCREMENT_COUNT)) {
-            Log.d("LateCounter-Widget", "Received increment broadcast.");
+            Log.d("LateCounter-Widget", "Received increment broadcast on widget " + widgetId);
             prefs.incrementLateCount();
             Log.d("LateCounter-Widget", "Count : " + prefs.getTodaysLateCount());
 
