@@ -33,9 +33,7 @@ public class CounterType extends RealmObject {
 
     @Override
     public String toString() {
-        return "CounterType{" +
-                "description='" + description + '\'' +
-                '}';
+        return getDescription();
     }
 
     @Override

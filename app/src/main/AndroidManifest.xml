@@ -22,7 +22,20 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.PickCounterTypeActivity"
+            android:label="@string/select_counter_type"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+
         <receiver android:name=".widget.CounterWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/counter_widget_info" />
+        </receiver>
+
+        <receiver android:name=".widget.GenericCounterWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

@@ -1,12 +1,15 @@
 package com.reactiverobot.latecounter.widget;
 
-import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.activity.PickCounterTypeActivity;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
@@ -30,16 +33,27 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 CounterRecord todaysCount = counterRecords.getTodaysCount(typeForWidget.get());
 
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
+
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
 
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 21312,
+                        new Intent(context, PickCounterTypeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                views.setOnClickPendingIntent(R.id.whole_widget, pendingIntent);
+
                 appWidgetManager.updateAppWidget(widgetId, views);
             } else {
-                new AlertDialog.Builder(context)
-                        .setTitle("Select counter:")
-                        .create()
-                        .show();
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
+
+                context.startActivity(new Intent(context, PickCounterTypeActivity.class));
+
+                appWidgetManager.updateAppWidget(widgetId, views);
             }
         }
+    }
+
+    @Override
+    public void onHandleReceived(Context context, Intent intent) {
+        Log.d("GenericCoutnerWidget", "Received intent: " + intent.getAction());
     }
 }

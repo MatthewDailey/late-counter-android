@@ -1,14 +1,15 @@
 package com.reactiverobot.latecounter.widget;
 
-import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.activity.PickCounterTypeActivity;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.MockModelModule;
@@ -17,18 +18,16 @@ import com.reactiverobot.latecounter.prefs.PrefsModule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
-import org.robolectric.Shadows;
-import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowAppWidgetManager;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 public class CounterWidgetRoboTest extends AbstractRoboTest {
 
@@ -55,8 +54,8 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     }
 
     private void createWidget() {
-        shadowAppWidgetManager = Shadows
-                .shadowOf(AppWidgetManager.getInstance(context));
+        shadowAppWidgetManager =
+                shadowOf(AppWidgetManager.getInstance(context));
         widgetId = shadowAppWidgetManager
                 .createWidget(GenericCounterWidget.class, R.layout.counter_widget);
     }
@@ -81,8 +80,8 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
         verify(mockModelModule.counterTypes).getTypeForWidget(widgetId);
 
-        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
-        assertNotNull("No dialog launched.", latestAlertDialog);
+        assertThat(shadowOf(context).getNextStartedActivity().getComponent(),
+                is(equalTo(new Intent(context, PickCounterTypeActivity.class).getComponent())));
     }
 
     @Test
