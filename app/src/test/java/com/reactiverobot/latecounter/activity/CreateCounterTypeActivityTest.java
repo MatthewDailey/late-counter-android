@@ -29,4 +29,5 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
     public void testCanStartCreateCounterTypeActivity() {
         assertNotNull(Robolectric.setupActivity(CreateCounterTypeActivity.class));
     }
+
 }

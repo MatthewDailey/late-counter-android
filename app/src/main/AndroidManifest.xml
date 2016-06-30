@@ -24,7 +24,10 @@
 
         <activity
             android:name=".activity.PickCounterTypeActivity"
-            android:label="@string/select_counter_type"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+
+        <activity
+            android:name=".activity.CreateCounterTypeActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
 
 
