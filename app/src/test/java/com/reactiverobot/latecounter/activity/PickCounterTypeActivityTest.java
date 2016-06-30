@@ -2,6 +2,7 @@ package com.reactiverobot.latecounter.activity;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowAppWidgetManager;
 
 import java.util.Date;
 
@@ -35,8 +37,8 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
     @Rule
     public MockModelModule mockModelModule = new MockModelModule();
 
+    private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;
-
     private Activity pickCounterTypeActivity;
 
     @Override
@@ -44,8 +46,8 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
         when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.<CounterType>absent());
 
-        widgetId = shadowOf(AppWidgetManager.getInstance(context))
-                .createWidget(GenericCounterWidget.class, R.layout.counter_widget);
+        shadowAppWidgetManager = shadowOf(AppWidgetManager.getInstance(context));
+        widgetId = shadowAppWidgetManager.createWidget(GenericCounterWidget.class, R.layout.counter_widget);
     }
 
     private void setupActivity() {
@@ -129,6 +131,12 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
         typeList.getAdapter().getView(1, null, null).performClick();
 
         verify(mockModelModule.counterTypes).createSafelyWithWidgetId("type", widgetId);
+
+        View widgetView = shadowAppWidgetManager.getViewFor(widgetId);
+        TextView countView = (TextView) widgetView.findViewById(R.id.count_text);
+        assertThat(countView.getText().toString(), is(equalTo("1")));
+        TextView countTitle = (TextView) widgetView.findViewById(R.id.count_description);
+        assertThat(countTitle.getText().toString(), is(equalTo("type")));
     }
 
 }
