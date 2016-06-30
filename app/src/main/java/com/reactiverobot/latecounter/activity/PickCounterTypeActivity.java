@@ -24,14 +24,13 @@ import roboguice.activity.RoboActivity;
 
 public class PickCounterTypeActivity extends RoboActivity {
 
-    private static final int CREATE_COUNTER_TYPE_ACTIVITY = 12;
-
     public static Intent getStartIntent(Context context, int widgetId) {
         Intent launchPickTypeActivity = new Intent(context, PickCounterTypeActivity.class);
         launchPickTypeActivity.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, widgetId);
         return launchPickTypeActivity;
     }
 
+    public static final int CREATE_COUNTER_TYPE_REQUEST_CODE = 12;
     public final static String WIDGET_ID_EXTRA = "AppWidgetId";
 
     @Inject CounterTypes counterTypes;
@@ -98,7 +97,7 @@ public class PickCounterTypeActivity extends RoboActivity {
                     counterTypeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startCreateCounterTypeActivityForResult(); 
+                            startCreateCounterTypeActivityForResult();
                         }
                     });
 
@@ -143,11 +142,16 @@ public class PickCounterTypeActivity extends RoboActivity {
 
     private void startCreateCounterTypeActivityForResult() {
         Intent intent = new Intent(this, CreateCounterTypeActivity.class);
-        startActivityForResult(intent, CREATE_COUNTER_TYPE_ACTIVITY);
+        startActivityForResult(intent, CREATE_COUNTER_TYPE_REQUEST_CODE);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        if (requestCode == CREATE_COUNTER_TYPE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Successfully created new counter type associated with the widget.
+                finish();
+            }
+        }
     }
 }

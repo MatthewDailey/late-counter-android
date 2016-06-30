@@ -2,6 +2,7 @@ package com.reactiverobot.latecounter.activity;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,10 +24,13 @@ import org.robolectric.shadows.ShadowAppWidgetManager;
 
 import java.util.Date;
 
+import static com.reactiverobot.latecounter.activity.PickCounterTypeActivity.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,7 +56,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     private void setupActivity() {
         pickCounterTypeActivity = Robolectric.buildActivity(PickCounterTypeActivity.class)
-                .withIntent(PickCounterTypeActivity.getStartIntent(context, widgetId))
+                .withIntent(getStartIntent(context, widgetId))
                 .create()
                 .get();
     }
@@ -155,4 +159,33 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
                         .getClassName())));
     }
 
+    @Test
+    public void testReceiveOkCreateCounterTypeResult() {
+        setupActivity();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+        typeList.getAdapter().getView(1, null, null).performClick();
+
+        shadowOf(pickCounterTypeActivity).receiveResult(
+                new Intent(pickCounterTypeActivity, CreateCounterTypeActivity.class),
+                Activity.RESULT_OK,
+                new Intent());
+
+        assertTrue(pickCounterTypeActivity.isFinishing());
+    }
+
+    @Test
+    public void testReceiveCancelledCreateCounterTypeResult() {
+        setupActivity();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+        typeList.getAdapter().getView(1, null, null).performClick();
+
+        shadowOf(pickCounterTypeActivity).receiveResult(
+                new Intent(pickCounterTypeActivity, CreateCounterTypeActivity.class),
+                Activity.RESULT_CANCELED,
+                new Intent());
+
+        assertFalse(pickCounterTypeActivity.isFinishing());
+    }
 }
