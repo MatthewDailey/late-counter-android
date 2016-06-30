@@ -1,8 +1,8 @@
 package com.reactiverobot.latecounter.widget;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
@@ -35,10 +35,11 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
                 appWidgetManager.updateAppWidget(widgetId, views);
             } else {
-                // TODO: Launch type selector.
+                new AlertDialog.Builder(context)
+                        .setTitle("Select counter:")
+                        .create()
+                        .show();
             }
-
-            Log.d("GenericCounterWidget", typeForWidget.toString());
         }
     }
 }

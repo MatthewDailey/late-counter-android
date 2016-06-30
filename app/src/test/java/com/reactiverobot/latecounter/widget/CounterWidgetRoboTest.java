@@ -1,5 +1,6 @@
 package com.reactiverobot.latecounter.widget;
 
+import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.view.View;
@@ -17,17 +18,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.Shadows;
+import org.robolectric.shadows.ShadowAlertDialog;
 import org.robolectric.shadows.ShadowAppWidgetManager;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CounterWidgetRoboTest extends AbstractRoboTest {
+
+    private CounterRecord counterRecord;
+    private CounterType counterType;
 
     private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;
@@ -37,6 +43,13 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Override
     protected void setup() {
+        counterType = new CounterType();
+        counterType.setDescription("desc");
+        counterType.setWidgetId(1);
+
+        counterRecord = new CounterRecord();
+        counterRecord.setCount(10);
+
         when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.<CounterType>absent());
     }
@@ -63,21 +76,17 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     }
 
     @Test
-    public void testLoadWidgetCounterTypeOnUpdate() {
+    public void testLaunchDialogWhenNoTypeSet() {
         createWidget();
 
         verify(mockModelModule.counterTypes).getTypeForWidget(widgetId);
+
+        AlertDialog latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog();
+        assertNotNull("No dialog launched.", latestAlertDialog);
     }
 
     @Test
     public void testSetViewFromTodaysCount() {
-        CounterType counterType = new CounterType();
-        counterType.setDescription("desc");
-        counterType.setWidgetId(1);
-
-        CounterRecord counterRecord = new CounterRecord();
-        counterRecord.setCount(10);
-
         when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.of(counterType));
         when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
