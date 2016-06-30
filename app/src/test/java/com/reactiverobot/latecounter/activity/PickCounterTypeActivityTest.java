@@ -41,6 +41,11 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
     @Rule
     public MockModelModule mockModelModule = new MockModelModule();
 
+    @Override
+    protected Module[] getModules() {
+        return new Module[]{mockModelModule};
+    }
+
     private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;
     private Activity pickCounterTypeActivity;
@@ -59,11 +64,6 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
                 .withIntent(getStartIntent(context, widgetId))
                 .create()
                 .get();
-    }
-
-    @Override
-    protected Module[] getModules() {
-        return new Module[]{mockModelModule};
     }
 
     @Test
