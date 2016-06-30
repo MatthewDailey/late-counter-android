@@ -3,6 +3,7 @@ package com.reactiverobot.latecounter.activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +78,14 @@ public class PickCounterTypeActivity extends RoboActivity {
                     View counterTypeView = LayoutInflater
                             .from(PickCounterTypeActivity.this)
                             .inflate(R.layout.counter_type_list_item, null);
+                    counterTypeView.setClickable(false);
+                    counterTypeView.setOnClickListener(null);
+
+                    TextView titleView = (TextView) counterTypeView
+                            .findViewById(R.id.counter_type_list_item_name);
+                    titleView.setText("Pick a counter:");
+                    titleView.setTypeface(null, Typeface.BOLD);
+
                     return counterTypeView;
                 } else if (position == counterTypesWithNoWidget.size() + 1) {
                     // Footer to create new type.
