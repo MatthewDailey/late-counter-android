@@ -48,8 +48,15 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setTextViewText(R.id.count_description, "Click to choose counter type.");
                 views.setTextViewText(R.id.count_text, "");
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 21312,
-                        new Intent(context, PickCounterTypeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                Intent launchPickTypeActivity = new Intent(context, PickCounterTypeActivity.class);
+                launchPickTypeActivity.putExtra("widgetId", widgetId);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context,
+                        21312,
+                        launchPickTypeActivity,
+                        PendingIntent.FLAG_CANCEL_CURRENT);
+
                 views.setOnClickPendingIntent(R.id.whole_widget, pendingIntent);
 
                 appWidgetManager.updateAppWidget(widgetId, views);

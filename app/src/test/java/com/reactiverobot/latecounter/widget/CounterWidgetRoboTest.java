@@ -39,6 +39,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Rule
     public MockModelModule mockModelModule = new MockModelModule();
+    private Intent nextStartedActivity;
 
     @Override
     protected void setup() {
@@ -84,8 +85,10 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
         shadowAppWidgetManager.getViewFor(widgetId).performClick();
 
-        assertThat(shadowOf(context).getNextStartedActivity().getComponent(),
+        nextStartedActivity = shadowOf(context).getNextStartedActivity();
+        assertThat(nextStartedActivity.getComponent(),
                 is(equalTo(new Intent(context, PickCounterTypeActivity.class).getComponent())));
+        assertThat(nextStartedActivity.getIntExtra("widgetId", -1), is(equalTo(widgetId)));
     }
 
     @Test
