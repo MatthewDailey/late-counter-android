@@ -33,12 +33,11 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
         ShadowAppWidgetManager shadowAppWidgetManager = Shadows
                 .shadowOf(AppWidgetManager.getInstance(context));
         int widgetId = shadowAppWidgetManager
-                .createWidget(CounterWidget.class, R.layout.counter_widget);
+                .createWidget(GenericCounterWidget.class, R.layout.counter_widget);
 
         AppWidgetProvider appWidgetProvider =
                 shadowAppWidgetManager.getAppWidgetProviderFor(widgetId);
-        assertThat(appWidgetProvider, is(instanceOf(CounterWidget.class)));
+        assertThat(appWidgetProvider, is(instanceOf(GenericCounterWidget.class)));
     }
-
 
 }
