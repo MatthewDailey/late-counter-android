@@ -37,6 +37,13 @@ public class CreateCounterTypeActivity extends RoboActivity {
                 }
             }
         });
+
+        findViewById(R.id.create_counter_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private String getNewDescription() {

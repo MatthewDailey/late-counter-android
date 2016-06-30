@@ -18,6 +18,7 @@ import org.robolectric.shadows.ShadowToast;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
@@ -75,4 +76,10 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
         assertThat(ShadowToast.getTextOfLatestToast(), is(equalTo("test message")));
     }
 
+    @Test
+    public void testCancelButtonFinishes() {
+        cancelButton.performClick();
+
+        assertTrue(activity.isFinishing());
+    }
 }
