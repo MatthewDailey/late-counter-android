@@ -17,4 +17,16 @@ public interface CounterTypes {
     List<CounterType> loadTypesWithNoWidget();
 
     void removeWidgetId(int widgetId);
+
+    CounterType createUniqueTypeForWidget(String description, int widgetId)
+            throws FailureCreatingCounterTypeException;
+
+
+    class FailureCreatingCounterTypeException extends Exception {
+        public final String message;
+
+        public FailureCreatingCounterTypeException(String message) {
+            this.message = message;
+        }
+    }
 }
