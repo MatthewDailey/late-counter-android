@@ -1,6 +1,7 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -8,31 +9,43 @@ import com.google.common.collect.Lists;
 import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.MockModelModule;
+import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.Robolectric;
+
+import java.util.Date;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Rule
     public MockModelModule mockModelModule = new MockModelModule();
 
-    private final int widgetId = 1;
+    private int widgetId;
 
     private Activity pickCounterTypeActivity;
 
     @Override
     protected void setup() {
-        // Do nothing.
+        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+                .thenReturn(Optional.<CounterType>absent());
+
+        widgetId = shadowOf(AppWidgetManager.getInstance(context))
+                .createWidget(GenericCounterWidget.class, R.layout.counter_widget);
     }
 
     private void setupActivity() {
@@ -98,4 +111,24 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
                 .findViewById(R.id.counter_type_list_item_name);
         assertThat(headerTextView.getText().toString(), is(equalTo("type")));
     }
+
+    @Test
+    public void testSetWidgetIdForTypeWhenClicked() {
+        CounterType type = CounterType.withDescription("type");
+        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+                .thenReturn(Lists.newArrayList(type));
+        when(mockModelModule.counterTypes.getTypeForWidget(widgetId))
+                .thenReturn(Optional.of(type));
+        when(mockModelModule.mockCounterRecords.getTodaysCount(type))
+                .thenReturn(CounterRecord.create(new Date(), 1, type));
+
+        setupActivity();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+
+        typeList.getAdapter().getView(1, null, null).performClick();
+
+        verify(mockModelModule.counterTypes).createSafelyWithWidgetId("type", widgetId);
+    }
+
 }

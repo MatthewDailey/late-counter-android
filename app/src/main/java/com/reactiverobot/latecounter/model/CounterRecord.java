@@ -10,6 +10,14 @@ public class CounterRecord extends RealmObject {
     private int count;
     private CounterType counterType;
 
+    public static CounterRecord create(Date date, int count, CounterType type) {
+        CounterRecord record = new CounterRecord();
+        record.setDate(date);
+        record.setCount(count);
+        record.setCounterType(type);
+        return record;
+    }
+
     public Date getDate() {
         return date;
     }
