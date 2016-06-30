@@ -3,6 +3,8 @@ package com.reactiverobot.latecounter.model;
 
 import org.roboguice.shaded.goole.common.base.Optional;
 
+import java.util.List;
+
 public interface CounterTypes {
     CounterType createSafely(String description);
 
@@ -11,4 +13,6 @@ public interface CounterTypes {
     Optional<CounterType> getType(String description);
 
     Optional<CounterType> getTypeForWidget(int widgetId);
+
+    List<CounterType> loadTypesWithNoWidget();
 }

@@ -6,6 +6,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -71,5 +73,15 @@ public class CounterTypeTest {
 
         Optional<CounterType> type = counterTypes.getTypeForWidget(2);
         assertThat(type.isPresent(), is(false));
+    }
+
+    @Test
+    public void testLoadAllTypesWithNoWidget() {
+        counterTypes.createSafely("no-widget");
+        counterTypes.createSafelyWithWidgetId("widget", 1);
+
+        List<CounterType> counterTypesWithNoWidget = counterTypes.loadTypesWithNoWidget();
+
+        assertThat(counterTypesWithNoWidget.size(), is(equalTo(1)));
     }
 }

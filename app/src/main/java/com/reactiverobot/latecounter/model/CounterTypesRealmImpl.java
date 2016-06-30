@@ -6,12 +6,15 @@ import com.google.inject.Inject;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Throwables;
 
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
 class CounterTypesRealmImpl implements CounterTypes {
 
+    private static final int NO_WIDGET_ID = -1;
     private final RealmSupplier realmSupplier;
 
     @Inject
@@ -28,6 +31,8 @@ class CounterTypesRealmImpl implements CounterTypes {
                 CounterType counterType = realm.createObject(CounterType.class);
                 try {
                     counterType.setDescription(description);
+                    counterType.setWidgetId(NO_WIDGET_ID);
+
                     realm.commitTransaction();
 
                     return counterType;
@@ -104,6 +109,19 @@ class CounterTypesRealmImpl implements CounterTypes {
                 } else {
                     return Optional.of(realm.copyFromRealm(counterType.first()));
                 }
+            }
+        });
+    }
+
+    @Override
+    public List<CounterType> loadTypesWithNoWidget() {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<List<CounterType>>() {
+            @Override
+            public List<CounterType> call(Realm realm) {
+                return realm.copyFromRealm(
+                        realm.where(CounterType.class)
+                            .equalTo("widgetId", NO_WIDGET_ID)
+                            .findAll());
             }
         });
     }
