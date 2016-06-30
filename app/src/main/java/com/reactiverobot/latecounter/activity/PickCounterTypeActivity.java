@@ -18,6 +18,8 @@ import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
+import org.roboguice.shaded.goole.common.base.Preconditions;
+
 import java.util.List;
 
 import roboguice.activity.RoboActivity;
@@ -97,7 +99,7 @@ public class PickCounterTypeActivity extends RoboActivity {
                     counterTypeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startCreateCounterTypeActivityForResult();
+                            startCreateCounterTypeActivityForResult(appWidgetId);
                         }
                     });
 
@@ -140,8 +142,9 @@ public class PickCounterTypeActivity extends RoboActivity {
         sendBroadcast(intent);
     }
 
-    private void startCreateCounterTypeActivityForResult() {
+    private void startCreateCounterTypeActivityForResult(int appWidgetId) {
         Intent intent = new Intent(this, CreateCounterTypeActivity.class);
+        intent.putExtra(WIDGET_ID_EXTRA, appWidgetId);
         startActivityForResult(intent, CREATE_COUNTER_TYPE_REQUEST_CODE);
     }
 
@@ -150,7 +153,11 @@ public class PickCounterTypeActivity extends RoboActivity {
         if (requestCode == CREATE_COUNTER_TYPE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // Successfully created new counter type associated with the widget.
+                int appWidgetId = data.getIntExtra(WIDGET_ID_EXTRA, -1);
+                Preconditions.checkState(appWidgetId >= 0);
+                broadcastUpdateWidget(appWidgetId);
                 finish();
+
             }
         }
     }

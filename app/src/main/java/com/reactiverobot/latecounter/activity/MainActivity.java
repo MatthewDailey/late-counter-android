@@ -21,19 +21,6 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        counterTypes.createSafely("tesdt1");
-        counterTypes.createSafely("testd1");
-        counterTypes.createSafely("tedst2");
-        counterTypes.createSafely("tedst3");
-        counterTypes.createSafely("tedst4");
-        counterTypes.createSafely("test5");
-        counterTypes.createSafely("test6");
-        counterTypes.createSafely("test9");
-        counterTypes.createSafely("test7");
-        counterTypes.createSafely("test8");
-
     }
 
     @Override

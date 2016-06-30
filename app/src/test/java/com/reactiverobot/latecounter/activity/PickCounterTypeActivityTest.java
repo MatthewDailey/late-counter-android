@@ -151,12 +151,12 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         typeList.getAdapter().getView(1, null, null).performClick();
 
+        Intent launchedIntent = shadowOf(pickCounterTypeActivity)
+                .getNextStartedActivityForResult()
+                .intent;
         assertThat(CreateCounterTypeActivity.class.getName(),
-                is(equalTo(shadowOf(pickCounterTypeActivity)
-                        .getNextStartedActivityForResult()
-                        .intent
-                        .getComponent()
-                        .getClassName())));
+                is(equalTo(launchedIntent.getComponent().getClassName())));
+        assertThat(launchedIntent.getIntExtra(WIDGET_ID_EXTRA, -1), is(equalTo(widgetId)));
     }
 
     @Test
@@ -166,12 +166,17 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
         ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
         typeList.getAdapter().getView(1, null, null).performClick();
 
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(WIDGET_ID_EXTRA, widgetId);
+
         shadowOf(pickCounterTypeActivity).receiveResult(
                 new Intent(pickCounterTypeActivity, CreateCounterTypeActivity.class),
                 Activity.RESULT_OK,
-                new Intent());
+                resultIntent);
 
         assertTrue(pickCounterTypeActivity.isFinishing());
+
+        assertThat(shadowOf(pickCounterTypeActivity).getBroadcastIntents().size(), is(equalTo(1)));
     }
 
     @Test

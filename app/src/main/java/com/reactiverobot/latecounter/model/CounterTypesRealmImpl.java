@@ -184,4 +184,6 @@ class CounterTypesRealmImpl implements CounterTypes {
         return realm.where(CounterType.class).equalTo("widgetId", widgetId);
     }
 
+
+
 }

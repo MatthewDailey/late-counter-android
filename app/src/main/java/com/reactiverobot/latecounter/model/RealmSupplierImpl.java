@@ -21,7 +21,7 @@ class RealmSupplierImpl implements RealmSupplier {
             @Override
             public Realm get() {
                 RealmConfiguration config = new RealmConfiguration.Builder(context)
-                        .schemaVersion(2)
+                        .schemaVersion(3)
                         .deleteRealmIfMigrationNeeded()
                         .build();
 

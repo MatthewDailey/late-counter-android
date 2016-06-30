@@ -1,5 +1,6 @@
 package com.reactiverobot.latecounter.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 public class CreateCounterTypeActivityTest extends AbstractRoboTest {
 
@@ -81,5 +83,19 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
         cancelButton.performClick();
 
         assertTrue(activity.isFinishing());
+    }
+
+    @Test
+    public void testReturnsResultOkOnComplete() {
+        newCounterNameText.setText("new type");
+
+        submitButton.performClick();
+
+        assertTrue(activity.isFinishing());
+        assertThat(shadowOf(activity).getResultCode(), is(equalTo(Activity.RESULT_OK)));
+        assertThat(shadowOf(activity)
+                .getResultIntent()
+                .getIntExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, -1),
+                is(equalTo(testAppWidgetId)));
     }
 }

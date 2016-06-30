@@ -1,5 +1,7 @@
 package com.reactiverobot.latecounter.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -30,6 +32,12 @@ public class CreateCounterTypeActivity extends RoboActivity {
             public void onClick(View v) {
                 try {
                     counterTypes.createUniqueTypeForWidget(getNewDescription(), appWidgetId);
+
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, appWidgetId);
+
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
                 } catch (CounterTypes.FailureCreatingCounterTypeException e) {
                     Toast.makeText(CreateCounterTypeActivity.this,
                             e.message,

@@ -21,7 +21,6 @@ public interface CounterTypes {
     void createUniqueTypeForWidget(String description, int widgetId)
             throws FailureCreatingCounterTypeException;
 
-
     class FailureCreatingCounterTypeException extends Exception {
         public final String message;
 
