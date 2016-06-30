@@ -91,4 +91,32 @@ public class CounterTypeTest {
 
         assertThat(counterTypes.loadTypesWithNoWidget().size(), is(equalTo(1)));
     }
+
+    @Test
+    public void testCreateUnique() throws CounterTypes.FailureCreatingCounterTypeException {
+        counterTypes.createUniqueTypeForWidget("new-type", 1);
+
+        Optional<CounterType> type = counterTypes.getType("new-type");
+        assertThat(type.get().getWidgetId(), is(equalTo(1)));
+    }
+
+    @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
+    public void testCreateUniqueWithDuplicateDescription()
+            throws CounterTypes.FailureCreatingCounterTypeException {
+        counterTypes.createUniqueTypeForWidget("new-type", 1);
+        counterTypes.createUniqueTypeForWidget("new-type", 2);
+    }
+
+    @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
+    public void testCreateUniqueWithDuplicateWidgetid()
+            throws CounterTypes.FailureCreatingCounterTypeException {
+        counterTypes.createUniqueTypeForWidget("new-type", 1);
+        counterTypes.createUniqueTypeForWidget("different-new-type", 1);
+    }
+
+    @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
+    public void testCreateUniqueWithEmptyDescription()
+            throws CounterTypes.FailureCreatingCounterTypeException {
+        counterTypes.createUniqueTypeForWidget("", 1);
+    }
 }
