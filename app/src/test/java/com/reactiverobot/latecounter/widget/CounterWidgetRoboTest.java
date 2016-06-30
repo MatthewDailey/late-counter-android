@@ -80,6 +80,10 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
         verify(mockModelModule.counterTypes).getTypeForWidget(widgetId);
 
+        assertThat(shadowOf(context).getNextStartedActivity(), is(equalTo(null)));
+
+        shadowAppWidgetManager.getViewFor(widgetId).performClick();
+
         assertThat(shadowOf(context).getNextStartedActivity().getComponent(),
                 is(equalTo(new Intent(context, PickCounterTypeActivity.class).getComponent())));
     }

@@ -45,7 +45,12 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
             } else {
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
 
-                context.startActivity(new Intent(context, PickCounterTypeActivity.class));
+                views.setTextViewText(R.id.count_description, "Click to choose counter type.");
+                views.setTextViewText(R.id.count_text, "");
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 21312,
+                        new Intent(context, PickCounterTypeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                views.setOnClickPendingIntent(R.id.whole_widget, pendingIntent);
 
                 appWidgetManager.updateAppWidget(widgetId, views);
             }
