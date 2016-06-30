@@ -139,4 +139,20 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
         assertThat(countTitle.getText().toString(), is(equalTo("type")));
     }
 
+    @Test
+    public void testClickingOnFooterLaunchesCreateCounter() {
+        setupActivity();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+
+        typeList.getAdapter().getView(1, null, null).performClick();
+
+        assertThat(CreateCounterTypeActivity.class.getName(),
+                is(equalTo(shadowOf(pickCounterTypeActivity)
+                        .getNextStartedActivityForResult()
+                        .intent
+                        .getComponent()
+                        .getClassName())));
+    }
+
 }

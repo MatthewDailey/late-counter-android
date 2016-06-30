@@ -24,6 +24,8 @@ import roboguice.activity.RoboActivity;
 
 public class PickCounterTypeActivity extends RoboActivity {
 
+    private static final int CREATE_COUNTER_TYPE_ACTIVITY = 12;
+
     public static Intent getStartIntent(Context context, int widgetId) {
         Intent launchPickTypeActivity = new Intent(context, PickCounterTypeActivity.class);
         launchPickTypeActivity.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, widgetId);
@@ -93,10 +95,17 @@ public class PickCounterTypeActivity extends RoboActivity {
                             .from(PickCounterTypeActivity.this)
                             .inflate(R.layout.counter_type_list_item, null);
 
+                    counterTypeView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startCreateCounterTypeActivityForResult(); 
+                        }
+                    });
+
                     TextView titleView = (TextView) counterTypeView
                             .findViewById(R.id.counter_type_list_item_name);
                     titleView.setText("Add a new counter.");
-                    titleView.setTypeface(null, Typeface.BOLD);
+                    titleView.setTypeface(null, Typeface.ITALIC);
 
                     return counterTypeView;
                 } else {
@@ -132,4 +141,13 @@ public class PickCounterTypeActivity extends RoboActivity {
         sendBroadcast(intent);
     }
 
+    private void startCreateCounterTypeActivityForResult() {
+        Intent intent = new Intent(this, CreateCounterTypeActivity.class);
+        startActivityForResult(intent, CREATE_COUNTER_TYPE_ACTIVITY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    }
 }
