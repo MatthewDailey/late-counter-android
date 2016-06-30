@@ -35,8 +35,6 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     protected void setup() {
         when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.<CounterType>absent());
-
-        createWidget();
     }
 
     private void createWidget() {
@@ -53,6 +51,8 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Test
     public void testInstantiateWidget() {
+        createWidget();
+
         AppWidgetProvider appWidgetProvider =
                 shadowAppWidgetManager.getAppWidgetProviderFor(widgetId);
         assertThat(appWidgetProvider, is(instanceOf(GenericCounterWidget.class)));
@@ -60,9 +60,23 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Test
     public void testLoadWidgetCounterTypeOnUpdate() {
-        // Update is called by default when creating the widget.
+        createWidget();
 
         verify(mockModelModule.counterTypes).getTypeForWidget(widgetId);
+    }
+
+    @Test
+    public void testLoadRecordIfTypeSet() {
+        CounterType counterType = new CounterType();
+        counterType.setDescription("desc");
+        counterType.setWidgetId(1);
+
+        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+                .thenReturn(Optional.of(counterType));
+
+        createWidget();
+
+        verify(mockModelModule.mockCounterRecords).getTodaysCount(counterType);
     }
 
 }
