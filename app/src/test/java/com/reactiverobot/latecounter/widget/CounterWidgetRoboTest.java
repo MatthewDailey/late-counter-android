@@ -2,11 +2,14 @@ package com.reactiverobot.latecounter.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.common.base.Optional;
 import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.MockModelModule;
 import com.reactiverobot.latecounter.prefs.PrefsModule;
@@ -16,6 +19,7 @@ import org.junit.Test;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowAppWidgetManager;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -66,17 +70,28 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     }
 
     @Test
-    public void testLoadRecordIfTypeSet() {
+    public void testSetViewFromTodaysCount() {
         CounterType counterType = new CounterType();
         counterType.setDescription("desc");
         counterType.setWidgetId(1);
 
+        CounterRecord counterRecord = new CounterRecord();
+        counterRecord.setCount(10);
+
         when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.of(counterType));
+        when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
+                .thenReturn(counterRecord);
 
         createWidget();
 
         verify(mockModelModule.mockCounterRecords).getTodaysCount(counterType);
+
+        View widgetView = shadowAppWidgetManager.getViewFor(widgetId);
+        TextView countView = (TextView) widgetView.findViewById(R.id.count_text);
+        assertThat(countView.getText().toString(), is(equalTo("10")));
+        TextView countTitle = (TextView) widgetView.findViewById(R.id.count_description);
+        assertThat(countTitle.getText().toString(), is(equalTo("desc")));
     }
 
 }
