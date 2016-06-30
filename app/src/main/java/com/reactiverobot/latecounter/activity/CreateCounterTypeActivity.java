@@ -31,7 +31,9 @@ public class CreateCounterTypeActivity extends RoboActivity {
                 try {
                     counterTypes.createUniqueTypeForWidget(getNewDescription(), appWidgetId);
                 } catch (CounterTypes.FailureCreatingCounterTypeException e) {
-                    
+                    Toast.makeText(CreateCounterTypeActivity.this,
+                            e.message,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

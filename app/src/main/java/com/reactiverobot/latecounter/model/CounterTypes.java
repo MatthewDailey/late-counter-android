@@ -18,7 +18,7 @@ public interface CounterTypes {
 
     void removeWidgetId(int widgetId);
 
-    CounterType createUniqueTypeForWidget(String description, int widgetId)
+    void createUniqueTypeForWidget(String description, int widgetId)
             throws FailureCreatingCounterTypeException;
 
 

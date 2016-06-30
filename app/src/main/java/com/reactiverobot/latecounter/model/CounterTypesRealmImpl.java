@@ -143,8 +143,7 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public CounterType createUniqueTypeForWidget(String description, int widgetId) {
-        return null;
+    public void createUniqueTypeForWidget(String description, int widgetId) {
     }
 
     @NonNull

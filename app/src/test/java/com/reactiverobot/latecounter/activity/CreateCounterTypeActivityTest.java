@@ -13,7 +13,12 @@ import com.reactiverobot.latecounter.model.MockModelModule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowToast;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
 public class CreateCounterTypeActivityTest extends AbstractRoboTest {
@@ -42,6 +47,7 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
             .withIntent(startCreateCounterTypeActivityIntent)
             .create()
             .get();
+
         newCounterNameText = (EditText) activity.findViewById(R.id.create_counter_text);
         submitButton = (Button) activity.findViewById(R.id.create_counter_submit);
         cancelButton = (Button) activity.findViewById(R.id.create_counter_cancel);
@@ -54,6 +60,19 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
         submitButton.performClick();
 
         verify(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId);
+    }
+
+    @Test
+    public void testShowToastWithErrorMessageIfFailToCreate()
+            throws CounterTypes.FailureCreatingCounterTypeException {
+        newCounterNameText.setText("new type");
+
+        doThrow(new CounterTypes.FailureCreatingCounterTypeException("test message"))
+            .when(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId);
+
+        submitButton.performClick();
+
+        assertThat(ShadowToast.getTextOfLatestToast(), is(equalTo("test message")));
     }
 
 }
