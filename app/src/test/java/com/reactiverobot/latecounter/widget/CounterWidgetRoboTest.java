@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.common.base.Optional;
 import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
@@ -16,6 +15,7 @@ import com.reactiverobot.latecounter.prefs.PrefsModule;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowAppWidgetManager;
 
