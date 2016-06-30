@@ -40,6 +40,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     @Rule
     public MockModelModule mockModelModule = new MockModelModule();
     private Intent nextStartedActivity;
+    private Intent broadcastIntent;
 
     @Override
     protected void setup() {
@@ -105,9 +106,47 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
         View widgetView = shadowAppWidgetManager.getViewFor(widgetId);
         TextView countView = (TextView) widgetView.findViewById(R.id.count_text);
-        assertThat(countView.getText().toString(), is(equalTo("10")));
+        assertThat(countView.getText().toString(), is(equalTo(String.valueOf(counterRecord.getCount()))));
         TextView countTitle = (TextView) widgetView.findViewById(R.id.count_description);
         assertThat(countTitle.getText().toString(), is(equalTo("desc")));
+    }
+
+    @Test
+    public void testIncrementCountBroadcastWhenCounterClicked() {
+        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+                .thenReturn(Optional.of(counterType));
+        when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
+                .thenReturn(counterRecord);
+
+        createWidget();
+
+        shadowAppWidgetManager.getViewFor(widgetId).performClick();
+
+        broadcastIntent = shadowOf(context).getBroadcastIntents().get(0);
+        assertThat(GenericCounterWidget.class.getName(),
+                is(equalTo(broadcastIntent.getComponent().getClassName())));
+        assertThat("increment_count_action", is(equalTo(broadcastIntent.getAction())));
+    }
+
+    @Test
+    public void testIncrementCountWhenIncrementBroadcastReceived() {
+        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+                .thenReturn(Optional.of(counterType));
+        when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
+                .thenReturn(counterRecord);
+
+        // Create a widget for the AppWidgetManager to interact with. It's ok to do this
+        // since we aren't testing that part of the code.
+        createWidget();
+        GenericCounterWidget genericCounterWidget = new GenericCounterWidget();
+
+        Intent intent = new Intent(context, GenericCounterWidget.class);
+        intent.setAction("increment_count_action");
+        intent.putExtra("widget_id_extra", widgetId);
+
+        genericCounterWidget.onReceive(context, intent);
+
+        verify(mockModelModule.mockCounterRecords).incrementTodaysCount(counterType);
     }
 
 }

@@ -20,6 +20,9 @@ import org.roboguice.shaded.goole.common.base.Optional;
 
 public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
+    private static final String INCREMENT_COUNT_ACTION = "increment_count_action";
+    private static final String WIDGET_ID_EXTRA = "widget_id_extra";
+
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
 
@@ -37,9 +40,13 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 21312,
-                        new Intent(context, PickCounterTypeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
-                views.setOnClickPendingIntent(R.id.whole_widget, pendingIntent);
+                Intent intent = new Intent(context, GenericCounterWidget.class);
+                intent.setAction(INCREMENT_COUNT_ACTION);
+                intent.putExtra(WIDGET_ID_EXTRA, widgetId);
+                PendingIntent incrementIntent = PendingIntent.getBroadcast(context, widgetId, intent,
+                        PendingIntent.FLAG_CANCEL_CURRENT);
+
+                views.setOnClickPendingIntent(R.id.whole_widget, incrementIntent);
 
                 appWidgetManager.updateAppWidget(widgetId, views);
             } else {
@@ -63,7 +70,21 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
     @Override
     public void onHandleReceived(Context context, Intent intent) {
-        Log.d("GenericCoutnerWidget", "Received intent: " + intent.getAction());
+        Log.d("GenericCounterWidget", "Received intent: " + intent.getAction());
+
+        if (INCREMENT_COUNT_ACTION.equals(intent.getAction())) {
+            int appWidgetId = intent.getIntExtra(WIDGET_ID_EXTRA, -1);
+            if (appWidgetId >= 0) {
+                Optional<CounterType> typeForWidget = counterTypes.getTypeForWidget(appWidgetId);
+                if (typeForWidget.isPresent()) {
+                    counterRecords.incrementTodaysCount(typeForWidget.get());
+
+                    onHandleUpdate(context, AppWidgetManager.getInstance(context), new int[]{appWidgetId});
+                } else {
+                    Log.e("GenericCounterWidget", "Attempted to increment widget without type.");
+                }
+            }
+        }
     }
 
     @Override
