@@ -6,8 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 
-import java.util.List;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
@@ -80,8 +78,17 @@ public class CounterTypeTest {
         counterTypes.createSafely("no-widget");
         counterTypes.createSafelyWithWidgetId("widget", 1);
 
-        List<CounterType> counterTypesWithNoWidget = counterTypes.loadTypesWithNoWidget();
+        assertThat(counterTypes.loadTypesWithNoWidget().size(), is(equalTo(1)));
+    }
 
-        assertThat(counterTypesWithNoWidget.size(), is(equalTo(1)));
+    @Test
+    public void testRemoveWidgetIdForType() {
+        CounterType type = counterTypes.createSafelyWithWidgetId("widget", 1);
+
+        assertThat(counterTypes.loadTypesWithNoWidget().size(), is(equalTo(0)));
+
+        counterTypes.removeWidgetId(type.getWidgetId());
+
+        assertThat(counterTypes.loadTypesWithNoWidget().size(), is(equalTo(1)));
     }
 }

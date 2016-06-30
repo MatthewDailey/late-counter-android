@@ -1,6 +1,8 @@
 package com.reactiverobot.latecounter.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.Inject;
 
 import org.roboguice.shaded.goole.common.base.Optional;
@@ -9,6 +11,7 @@ import org.roboguice.shaded.goole.common.base.Throwables;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmPrimaryKeyConstraintException;
 
@@ -118,12 +121,30 @@ class CounterTypesRealmImpl implements CounterTypes {
         return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<List<CounterType>>() {
             @Override
             public List<CounterType> call(Realm realm) {
-                return realm.copyFromRealm(
-                        realm.where(CounterType.class)
-                            .equalTo("widgetId", NO_WIDGET_ID)
-                            .findAll());
+                return realm.copyFromRealm(loadTypesWithWidgetId(realm, NO_WIDGET_ID).findAll());
             }
         });
+    }
+
+    @Override
+    public void removeWidgetId(final int widgetId) {
+        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+            @Override
+            public void run(Realm realm) {
+                realm.beginTransaction();
+
+                for (CounterType type : loadTypesWithWidgetId(realm, widgetId).findAll()) {
+                    type.setWidgetId(NO_WIDGET_ID);
+                }
+
+                realm.commitTransaction();
+            }
+        });
+    }
+
+    @NonNull
+    private RealmQuery<CounterType> loadTypesWithWidgetId(Realm realm, int widgetId) {
+        return realm.where(CounterType.class).equalTo("widgetId", widgetId);
     }
 
 }

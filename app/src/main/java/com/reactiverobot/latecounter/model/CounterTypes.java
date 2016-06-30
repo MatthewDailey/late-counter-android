@@ -15,4 +15,6 @@ public interface CounterTypes {
     Optional<CounterType> getTypeForWidget(int widgetId);
 
     List<CounterType> loadTypesWithNoWidget();
+
+    void removeWidgetId(int widgetId);
 }
