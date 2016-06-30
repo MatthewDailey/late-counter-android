@@ -40,4 +40,5 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
         assertThat(appWidgetProvider, is(instanceOf(CounterWidget.class)));
     }
 
+
 }

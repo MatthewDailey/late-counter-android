@@ -53,6 +53,22 @@ public class CounterTypeTest {
         counterTypes.createSafelyWithWidgetId("new-type", 1);
         counterTypes.createSafelyWithWidgetId("new-type", 2);
         Optional<CounterType> type = counterTypes.getType("new-type");
-        assertThat(type.get().getWidgetid(), is(equalTo(2)));
+        assertThat(type.get().getWidgetId(), is(equalTo(2)));
+    }
+
+    @Test
+    public void testLoadTypeByWidgetId() {
+        CounterType originalType = counterTypes.createSafelyWithWidgetId("new-type", 1);
+
+        Optional<CounterType> type = counterTypes.getTypeForWidget(1);
+        assertThat(type.get(), is(equalTo(originalType)));
+    }
+
+    @Test
+    public void testLoadNonExistantTypeByWidgetId() {
+        counterTypes.createSafelyWithWidgetId("new-type", 1);
+
+        Optional<CounterType> type = counterTypes.getTypeForWidget(2);
+        assertThat(type.isPresent(), is(false));
     }
 }

@@ -52,7 +52,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                 CounterType counterType = realm.createObject(CounterType.class);
                 try {
                     counterType.setDescription(description);
-                    counterType.setWidgetid(widgetId);
+                    counterType.setWidgetId(widgetId);
 
                     realm.commitTransaction();
 
@@ -63,7 +63,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                             .equalTo("description", description)
                             .findAll()
                             .first();
-                    preExistingType.setWidgetid(widgetId);
+                    preExistingType.setWidgetId(widgetId);
                     realm.commitTransaction();
 
                     return realm.copyFromRealm(preExistingType);
@@ -81,6 +81,23 @@ class CounterTypesRealmImpl implements CounterTypes {
             public Optional<CounterType> call(Realm realm) {
                 RealmResults<CounterType> counterType = realm.where(CounterType.class)
                         .equalTo("description", description)
+                        .findAll();
+                if (counterType.isEmpty()) {
+                    return Optional.absent();
+                } else {
+                    return Optional.of(realm.copyFromRealm(counterType.first()));
+                }
+            }
+        });
+    }
+
+    @Override
+    public Optional<CounterType> getTypeForWidget(final int widgetId) {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<Optional<CounterType>>() {
+            @Override
+            public Optional<CounterType> call(Realm realm) {
+                RealmResults<CounterType> counterType = realm.where(CounterType.class)
+                        .equalTo("widgetId", widgetId)
                         .findAll();
                 if (counterType.isEmpty()) {
                     return Optional.absent();
