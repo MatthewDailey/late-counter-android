@@ -1,5 +1,7 @@
 package com.reactiverobot.latecounter.activity;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import java.util.List;
 
@@ -32,7 +35,9 @@ public class PickCounterTypeActivity extends RoboActivity {
 
         final List<CounterType> counterTypesWithNoWidget = counterTypes.loadTypesWithNoWidget();
 
-        ListView listView = new ListView(this);
+        setContentView(R.layout.counter_type_list);
+
+        ListView listView = (ListView) findViewById(R.id.counter_type_list_view);
         listView.setAdapter(new BaseAdapter() {
 
             @Override
@@ -83,6 +88,7 @@ public class PickCounterTypeActivity extends RoboActivity {
                         @Override
                         public void onClick(View v) {
                             counterTypes.createSafelyWithWidgetId(type.getDescription(), appWidgetId);
+                            broadcastUpdateWidget(appWidgetId);
                             finish();
                         }
                     });
@@ -95,8 +101,13 @@ public class PickCounterTypeActivity extends RoboActivity {
                 }
             }
         });
-//        new ArrayAdapter<>(this, R.layout.counter_type_list_item, ));
-
-        setContentView(listView);
     }
+
+    private void broadcastUpdateWidget(int appWidgetId) {
+        Intent intent = new Intent(this, GenericCounterWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+        sendBroadcast(intent);
+    }
+
 }
