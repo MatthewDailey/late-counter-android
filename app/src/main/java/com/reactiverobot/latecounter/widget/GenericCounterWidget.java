@@ -32,8 +32,6 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
 
-                // Make sure we only apply the RemoteViews to the widgetId in question. Make sure
-                // to remove and recreate the widget each time you manually test this.
                 appWidgetManager.updateAppWidget(widgetId, views);
             } else {
                 // TODO: Launch type selector.
