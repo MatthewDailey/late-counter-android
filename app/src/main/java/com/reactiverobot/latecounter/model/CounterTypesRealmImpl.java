@@ -1,9 +1,9 @@
 package com.reactiverobot.latecounter.model;
 
 
+import com.google.common.base.Optional;
 import com.google.inject.Inject;
 
-import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Throwables;
 
 import io.realm.Realm;

@@ -154,7 +154,7 @@
     <orderEntry type="library" exported="" scope="TEST" name="robolectric-3.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="maven-ant-tasks-2.1.3" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="ant-1.8.0" level="project" />
-    <orderEntry type="library" exported="" scope="TEST" name="guava-19.0-rc2" level="project" />
+    <orderEntry type="library" exported="" name="guava-19.0-rc2" level="project" />
     <orderEntry type="library" exported="" name="MPAndroidChart-v2.2.5" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="ant-launcher-1.8.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="xpp3_min-1.1.4c" level="project" />
