@@ -1,10 +1,10 @@
 package com.reactiverobot.latecounter.model;
 
-import com.google.common.base.Optional;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.roboguice.shaded.goole.common.base.Optional;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

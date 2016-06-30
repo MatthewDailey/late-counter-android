@@ -5,13 +5,14 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.google.common.base.Optional;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+
+import org.roboguice.shaded.goole.common.base.Optional;
 
 
 public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {

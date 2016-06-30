@@ -1,5 +1,7 @@
 package com.reactiverobot.latecounter.model;
 
+import android.support.annotation.NonNull;
+
 import com.google.inject.Inject;
 
 import org.roboguice.shaded.goole.common.base.Throwables;
@@ -28,23 +30,7 @@ class CounterRecordsRealmImpl implements CounterRecords {
             public CounterRecord call(Realm realm) {
                 try {
                     realm.beginTransaction();
-                    CounterType nonFinalType = type;
-                    if (!type.isValid()) {
-                        RealmResults<CounterType> realmResults = realm.where(CounterType.class)
-                                .equalTo("description", type.getDescription())
-                                .findAll();
-
-                        if (realmResults.isEmpty()) {
-                            nonFinalType = realm.copyToRealm(type);
-                        } else {
-                            nonFinalType = realmResults.first();
-                        }
-                    }
-
-                    CounterRecord counterRecord = realm.createObject(CounterRecord.class);
-                    counterRecord.setCounterType(nonFinalType);
-                    counterRecord.setDate(date);
-                    counterRecord.setCount(count);
+                    CounterRecord counterRecord = createNewCounterRecordInTransaction(realm, type, date, count);
 
                     realm.commitTransaction();
 
@@ -55,6 +41,30 @@ class CounterRecordsRealmImpl implements CounterRecords {
                 }
             }
         });
+    }
+
+    @NonNull
+    private CounterRecord createNewCounterRecordInTransaction(Realm realm, CounterType type, Date date, int count) {
+        assert realm.isInTransaction();
+
+        CounterType nonFinalType = type;
+        if (!type.isValid()) {
+            RealmResults<CounterType> realmResults = realm.where(CounterType.class)
+                    .equalTo("description", type.getDescription())
+                    .findAll();
+
+            if (realmResults.isEmpty()) {
+                nonFinalType = realm.copyToRealm(type);
+            } else {
+                nonFinalType = realmResults.first();
+            }
+        }
+
+        CounterRecord counterRecord = realm.createObject(CounterRecord.class);
+        counterRecord.setCounterType(nonFinalType);
+        counterRecord.setDate(date);
+        counterRecord.setCount(count);
+        return counterRecord;
     }
 
     @Override
@@ -72,6 +82,29 @@ class CounterRecordsRealmImpl implements CounterRecords {
                 } else {
                     return realm.copyFromRealm(todaysCount.first());
                 }
+            }
+        });
+    }
+
+    @Override
+    public void incrementTodaysCount(final CounterType counterType) {
+        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+            @Override
+            public void run(Realm realm) {
+                realm.beginTransaction();
+
+                RealmResults<CounterRecord> todaysCount = realm.where(CounterRecord.class)
+                        .equalTo("counterType.description", counterType.getDescription())
+                        .greaterThanOrEqualTo("date", getStartOfToday())
+                        .findAll();
+
+                if (todaysCount.isEmpty()) {
+                    createNewCounterRecordInTransaction(realm, counterType, new Date(), 1);
+                } else {
+                    CounterRecord counterRecord = todaysCount.first();
+                    counterRecord.setCount(counterRecord.getCount() +  1);
+                }
+                realm.commitTransaction();
             }
         });
     }

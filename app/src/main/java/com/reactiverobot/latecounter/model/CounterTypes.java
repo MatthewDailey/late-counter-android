@@ -1,7 +1,7 @@
 package com.reactiverobot.latecounter.model;
 
 
-import com.google.common.base.Optional;
+import org.roboguice.shaded.goole.common.base.Optional;
 
 public interface CounterTypes {
     CounterType createSafely(String description);

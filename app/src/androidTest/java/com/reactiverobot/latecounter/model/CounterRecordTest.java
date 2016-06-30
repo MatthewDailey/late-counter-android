@@ -26,4 +26,21 @@ public class CounterRecordTest {
         CounterRecord todaysCount = counterRecords.getTodaysCount(counterType);
         assertThat(todaysCount.getCount(), is(equalTo(0)));
     }
+
+    @Test
+    public void testIncrementTodaysCount() {
+        CounterType counterType = CounterType.withDescription("test-desc");
+        counterRecords.incrementTodaysCount(counterType);
+        CounterRecord todaysCount = counterRecords.getTodaysCount(counterType);
+        assertThat(todaysCount.getCount(), is(equalTo(1)));
+    }
+
+    @Test
+    public void testDoubleIncrementTodaysCount() {
+        CounterType counterType = CounterType.withDescription("test-desc");
+        counterRecords.incrementTodaysCount(counterType);
+        counterRecords.incrementTodaysCount(counterType);
+        CounterRecord todaysCount = counterRecords.getTodaysCount(counterType);
+        assertThat(todaysCount.getCount(), is(equalTo(2)));
+    }
 }
