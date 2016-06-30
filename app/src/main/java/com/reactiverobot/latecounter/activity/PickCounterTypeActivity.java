@@ -1,6 +1,7 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.appwidget.AppWidgetManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,6 +22,12 @@ import java.util.List;
 import roboguice.activity.RoboActivity;
 
 public class PickCounterTypeActivity extends RoboActivity {
+
+    public static Intent getStartIntent(Context context, int widgetId) {
+        Intent launchPickTypeActivity = new Intent(context, PickCounterTypeActivity.class);
+        launchPickTypeActivity.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, widgetId);
+        return launchPickTypeActivity;
+    }
 
     public final static String WIDGET_ID_EXTRA = "AppWidgetId";
 

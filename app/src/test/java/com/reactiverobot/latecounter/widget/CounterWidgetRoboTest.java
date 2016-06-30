@@ -88,7 +88,8 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
         nextStartedActivity = shadowOf(context).getNextStartedActivity();
         assertThat(nextStartedActivity.getComponent(),
                 is(equalTo(new Intent(context, PickCounterTypeActivity.class).getComponent())));
-        assertThat(nextStartedActivity.getIntExtra("widgetId", -1), is(equalTo(widgetId)));
+        assertThat(nextStartedActivity.getIntExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, -1),
+                is(equalTo(widgetId)));
     }
 
     @Test
