@@ -92,6 +92,12 @@ public class PickCounterTypeActivity extends RoboActivity {
                     View counterTypeView = LayoutInflater
                             .from(PickCounterTypeActivity.this)
                             .inflate(R.layout.counter_type_list_item, null);
+
+                    TextView titleView = (TextView) counterTypeView
+                            .findViewById(R.id.counter_type_list_item_name);
+                    titleView.setText("Add a new counter.");
+                    titleView.setTypeface(null, Typeface.BOLD);
+
                     return counterTypeView;
                 } else {
                     final CounterType type = getItem(position);

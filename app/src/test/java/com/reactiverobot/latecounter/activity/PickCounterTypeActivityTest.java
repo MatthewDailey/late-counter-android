@@ -55,10 +55,18 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         TextView headerTextView = (TextView) typeList.getAdapter()
                 .getView(0, null, null)
-                .findViewById(R.id.counter_type_list_item_name);;
+                .findViewById(R.id.counter_type_list_item_name);
         assertThat(headerTextView.getText().toString(), is(equalTo("Pick a counter:")));
     }
 
+    @Test
+    public void testHasAddTypeFooter() {
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
 
+        TextView headerTextView = (TextView) typeList.getAdapter()
+                .getView(1, null, null)
+                .findViewById(R.id.counter_type_list_item_name);
+        assertThat(headerTextView.getText().toString(), is(equalTo("Add a new counter.")));
+    }
 
 }
