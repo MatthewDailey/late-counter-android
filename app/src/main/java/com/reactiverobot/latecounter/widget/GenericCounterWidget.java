@@ -49,7 +49,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setTextViewText(R.id.count_text, "");
 
                 Intent launchPickTypeActivity = new Intent(context, PickCounterTypeActivity.class);
-                launchPickTypeActivity.putExtra("widgetId", widgetId);
+                launchPickTypeActivity.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, widgetId);
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context,
