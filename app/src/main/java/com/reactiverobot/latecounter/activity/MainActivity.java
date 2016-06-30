@@ -22,11 +22,12 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        counterTypes.createSafely("test1");
-        counterTypes.createSafely("test1");
-        counterTypes.createSafely("test2");
-        counterTypes.createSafely("test3");
-        counterTypes.createSafely("test4");
+
+        counterTypes.createSafely("tesdt1");
+        counterTypes.createSafely("testd1");
+        counterTypes.createSafely("tedst2");
+        counterTypes.createSafely("tedst3");
+        counterTypes.createSafely("tedst4");
         counterTypes.createSafely("test5");
         counterTypes.createSafely("test6");
         counterTypes.createSafely("test9");

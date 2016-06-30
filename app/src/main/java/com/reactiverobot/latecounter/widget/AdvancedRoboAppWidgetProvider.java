@@ -24,13 +24,15 @@ abstract class AdvancedRoboAppWidgetProvider extends RoboAppWidgetProvider {
 
     @Override
     public final void onReceive(Context context, Intent intent) {
+        doInjection(context);
+
         super.onReceive(context, intent);
 
-        doInjection(context);
         onHandleReceived(context, intent);
     }
 
     public void onHandleReceived(Context context, Intent intent) {
         // To be implemented by children.
     }
+
 }

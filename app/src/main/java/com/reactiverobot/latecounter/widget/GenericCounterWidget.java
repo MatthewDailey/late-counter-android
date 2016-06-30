@@ -68,4 +68,11 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
     public void onHandleReceived(Context context, Intent intent) {
         Log.d("GenericCoutnerWidget", "Received intent: " + intent.getAction());
     }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        for (int appWidgetId : appWidgetIds) {
+            counterTypes.removeWidgetId(appWidgetId);
+        }
+    }
 }
