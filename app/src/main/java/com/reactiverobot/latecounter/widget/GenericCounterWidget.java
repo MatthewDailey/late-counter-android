@@ -60,9 +60,9 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context,
-                        21312,
+                        widgetId,
                         PickCounterTypeActivity.getStartIntent(context, widgetId),
-                        PendingIntent.FLAG_CANCEL_CURRENT);
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
                 views.setOnClickPendingIntent(R.id.whole_widget, pendingIntent);
 
@@ -111,8 +111,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
         updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         updateAtMidnightIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
 
-        PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, 32342,
-                updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, widgetId + 1,
+                updateAtMidnightIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
