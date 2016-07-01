@@ -3,6 +3,8 @@ package com.reactiverobot.latecounter.activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -11,6 +13,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.google.inject.Inject;
+import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
@@ -36,15 +39,20 @@ public class GraphActivity extends RoboActionBarActivity {
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
 
+    @NonNull // after onCreate succeeds.
+    private CounterType counterType;
+    private boolean showingRealData = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         String counterTypeToGraph = getIntent().getStringExtra(COUNTER_TYPE_TO_GRAPH_EXTRA);
-        Optional<CounterType> type = counterTypes.getType(counterTypeToGraph);
+        Optional<CounterType> counterTypeOption = counterTypes.getType(counterTypeToGraph);
 
-        if (type.isPresent()) {
-            setContentView(getBarChart(type.get()));
+        if (counterTypeOption.isPresent()) {
+            counterType = counterTypeOption.get();
+            setChartFromRealData();
         } else {
             Toast.makeText(this,
                     "There is no data for the type '" + counterTypeToGraph + "'.",
@@ -55,30 +63,20 @@ public class GraphActivity extends RoboActionBarActivity {
 
     }
 
+    private void setChartFromRealData() {
+        setContentView(getBarChart(counterRecords.loadAllForTypeOrderedByDate(counterType)));
+    }
+
     @NonNull
-    private BarChart getBarChart(CounterType counterType) {
-        List<CounterRecord> counterRecordsOrderedByDate = new ArrayList<>();
-        Calendar cal = Calendar.getInstance();
-        int dateCount = 0;
-        Random random = new Random();
-
-        cal.add(Calendar.DATE, -dateCount);
-        for (int dateNum = 0; dateNum < dateCount; dateNum++) {
-            cal.add(Calendar.DATE, 1);
-            counterRecordsOrderedByDate.add(CounterRecord.create(cal.getTime(), random.nextInt(10), counterType));
-        }
-
-        counterRecordsOrderedByDate.addAll(this.counterRecords.loadAllForTypeOrderedByDate(counterType));
-
-
+    private BarChart getBarChart(List<CounterRecord> records) {
         int barEntryIndex = 0;
         List<BarEntry> barEntries = Lists.newArrayList();
-        for (CounterRecord record : counterRecordsOrderedByDate) {
+        for (CounterRecord record : records) {
             barEntries.add(new BarEntry(record.getCount(), barEntryIndex++, record.getDate()));
         }
 
         final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d yyyy");
-        List<String> dates = Lists.newArrayList(Iterables.transform(counterRecordsOrderedByDate,
+        List<String> dates = Lists.newArrayList(Iterables.transform(records,
                 new Function<CounterRecord, String>() {
                     @Override
                     public String apply(CounterRecord counterRecord) {
@@ -100,4 +98,44 @@ public class GraphActivity extends RoboActionBarActivity {
         return barChart;
     }
 
+    @NonNull
+    private List<CounterRecord> getSampleCounterRecords() {
+        List<CounterRecord> counterRecordsOrderedByDate = new ArrayList<>();
+        Calendar cal = Calendar.getInstance();
+        int dateCount = 100;
+        Random random = new Random();
+        cal.add(Calendar.DATE, -dateCount);
+        for (int dateNum = 0; dateNum < dateCount; dateNum++) {
+            cal.add(Calendar.DATE, 1);
+            counterRecordsOrderedByDate.add(CounterRecord.create(cal.getTime(), random.nextInt(10), counterType));
+        }
+        return counterRecordsOrderedByDate;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_graph, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.toggle_sample_data) {
+            synchronized (this) {
+                if (showingRealData) {
+                    setContentView(getBarChart(getSampleCounterRecords()));
+                    showingRealData = false;
+                } else {
+                    setChartFromRealData();
+                    showingRealData = true;
+                }
+            }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
