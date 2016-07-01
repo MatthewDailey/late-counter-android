@@ -107,7 +107,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
 
-        Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
+        Intent updateAtMidnightIntent = new Intent(context, GenericCounterWidget.class);
         updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         updateAtMidnightIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
 
