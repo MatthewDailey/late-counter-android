@@ -125,6 +125,23 @@ class CounterRecordsRealmImpl implements CounterRecords {
         );
     }
 
+    @Override
+    public void deleteType(final CounterType counterType) {
+        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+            @Override
+            public void run(Realm realm) {
+                realm.beginTransaction();
+
+                realm.where(CounterRecord.class)
+                        .equalTo("counterType.description", counterType.getDescription())
+                        .findAll()
+                        .deleteAllFromRealm();
+
+                realm.commitTransaction();
+            }
+        });
+    }
+
     private Date getStartOfToday() {
         Calendar date = new GregorianCalendar();
         date.set(Calendar.HOUR_OF_DAY, 0);

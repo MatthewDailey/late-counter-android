@@ -189,6 +189,23 @@ class CounterTypesRealmImpl implements CounterTypes {
         }
     }
 
+    @Override
+    public void deleteWithDescription(final String description) {
+        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
+            @Override
+            public void run(Realm realm) {
+                realm.beginTransaction();
+
+                realm.where(CounterType.class)
+                        .equalTo("description", description)
+                        .findAll()
+                        .deleteAllFromRealm();
+
+                realm.commitTransaction();
+            }
+        });
+    }
+
     @NonNull
     private RealmQuery<CounterType> loadTypesWithWidgetId(Realm realm, int widgetId) {
         return realm.where(CounterType.class).equalTo("widgetId", widgetId);

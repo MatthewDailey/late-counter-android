@@ -11,4 +11,6 @@ public interface CounterRecords {
     void incrementTodaysCount(CounterType counterType);
 
     List<CounterRecord> loadAllForTypeOrderedByDate(CounterType counterType);
+
+    void deleteType(CounterType counterType);
 }

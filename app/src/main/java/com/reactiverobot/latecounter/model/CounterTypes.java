@@ -23,6 +23,8 @@ public interface CounterTypes {
     void createUniqueTypeForWidget(String description, int widgetId)
             throws FailureCreatingCounterTypeException;
 
+    void deleteWithDescription(String description);
+
     class FailureCreatingCounterTypeException extends Exception {
         public final String message;
 

@@ -119,4 +119,19 @@ public class CounterTypeTest {
             throws CounterTypes.FailureCreatingCounterTypeException {
         counterTypes.createUniqueTypeForWidget("", 1);
     }
+
+    @Test
+    public void testDeleteByDescription() {
+        counterTypes.createSafely("type");
+
+        assertThat(counterTypes.getType("type").isPresent(), is(true));
+
+        counterTypes.deleteWithDescription("diff-type");
+
+        assertThat(counterTypes.getType("type").isPresent(), is(true));
+
+        counterTypes.deleteWithDescription("type");
+
+        assertThat(counterTypes.getType("type").isPresent(), is(false));
+    }
 }

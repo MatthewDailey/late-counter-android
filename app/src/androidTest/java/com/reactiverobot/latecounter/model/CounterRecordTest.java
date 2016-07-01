@@ -43,4 +43,21 @@ public class CounterRecordTest {
         CounterRecord todaysCount = counterRecords.getTodaysCount(counterType);
         assertThat(todaysCount.getCount(), is(equalTo(2)));
     }
+
+    @Test
+    public void testDeleteAllByType() {
+        CounterType typeOne = CounterType.withDescription("type-one");
+        CounterType typeTwo = CounterType.withDescription("type-two");
+
+        counterRecords.incrementTodaysCount(typeOne);
+        counterRecords.incrementTodaysCount(typeTwo);
+
+        assertThat(counterRecords.getTodaysCount(typeOne).getCount(), is(equalTo(1)));
+        assertThat(counterRecords.getTodaysCount(typeTwo).getCount(), is(equalTo(1)));
+
+        counterRecords.deleteType(typeOne);
+
+        assertThat(counterRecords.getTodaysCount(typeOne).getCount(), is(equalTo(0)));
+        assertThat(counterRecords.getTodaysCount(typeTwo).getCount(), is(equalTo(1)));
+    }
 }
