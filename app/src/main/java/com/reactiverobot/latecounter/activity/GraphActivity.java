@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -34,6 +35,7 @@ import roboguice.activity.RoboActionBarActivity;
 
 public class GraphActivity extends RoboActionBarActivity {
 
+    private final static String TAG = "GraphActivity";
     public final static String COUNTER_TYPE_TO_GRAPH_EXTRA = "counter_type_to_graph";
 
     @Inject CounterTypes counterTypes;
@@ -92,10 +94,23 @@ public class GraphActivity extends RoboActionBarActivity {
         barChart.invalidate();
         barChart.setDescription(counterType.getDescription());
 
+        if (records.size() > 7) {
+            float numDesiredVisible = 7;
+            float percentDesiredVisible = (records.size() / numDesiredVisible);
+            barChart.zoomAndCenterAnimated(percentDesiredVisible,
+                    1f,
+                    records.size(),
+                    barChart.getY(),
+                    YAxis.AxisDependency.RIGHT,
+                    1000);
+        }
+
         XAxis xAxis = barChart.getXAxis();
+        xAxis.setDrawGridLines(false);
+
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(10f);
-        xAxis.setTextColor(Color.RED);
+        xAxis.setTextColor(Color.BLACK);
         return barChart;
     }
 
