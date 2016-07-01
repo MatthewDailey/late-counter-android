@@ -51,6 +51,7 @@ public class GraphActivity extends RoboActionBarActivity {
         Optional<CounterType> counterTypeOption = counterTypes.getType(counterTypeToGraph);
 
         if (counterTypeOption.isPresent()) {
+            setTitle(counterTypeToGraph);
             counterType = counterTypeOption.get();
             setChartFromRealData();
         } else {
@@ -126,9 +127,11 @@ public class GraphActivity extends RoboActionBarActivity {
         if (id == R.id.toggle_sample_data) {
             synchronized (this) {
                 if (showingRealData) {
+                    setTitle(counterType.getDescription() + " - Sample Data");
                     setContentView(getBarChart(getSampleCounterRecords()));
                     showingRealData = false;
                 } else {
+                    setTitle(counterType.getDescription());
                     setChartFromRealData();
                     showingRealData = true;
                 }
