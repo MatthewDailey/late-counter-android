@@ -6,7 +6,11 @@ import android.view.MenuItem;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.model.CounterRecords;
+import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+
+import java.util.List;
 
 import roboguice.activity.RoboActionBarActivity;
 
@@ -15,12 +19,18 @@ public class MainActivity extends RoboActionBarActivity {
 
     private static final String TAG = "LateCounter-Activity";
 
-    @Inject
-    CounterTypes counterTypes;
+    @Inject CounterTypes counterTypes;
+    @Inject CounterRecords counterRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        List<CounterType> counterTypeList = counterTypes.loadAllTypes();
+
+        if (!counterTypeList.isEmpty()) {
+            setContentView(counterRecords.getPlotViewForType(this, counterTypeList.get(0)));
+        }
     }
 
     @Override

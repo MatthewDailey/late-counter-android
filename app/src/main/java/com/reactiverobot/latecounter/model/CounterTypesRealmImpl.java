@@ -128,6 +128,16 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
+    public List<CounterType> loadAllTypes() {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<List<CounterType>>() {
+            @Override
+            public List<CounterType> call(Realm realm) {
+                return realm.copyFromRealm(realm.where(CounterType.class).findAll());
+            }
+        });
+    }
+
+    @Override
     public void removeWidgetId(final int widgetId) {
         realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
             @Override

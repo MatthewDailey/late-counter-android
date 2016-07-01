@@ -16,6 +16,8 @@ public interface CounterTypes {
 
     List<CounterType> loadTypesWithNoWidget();
 
+    List<CounterType> loadAllTypes();
+
     void removeWidgetId(int widgetId);
 
     void createUniqueTypeForWidget(String description, int widgetId)

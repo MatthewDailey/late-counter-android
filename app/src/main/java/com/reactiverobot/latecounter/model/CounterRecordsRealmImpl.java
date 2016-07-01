@@ -1,10 +1,17 @@
 package com.reactiverobot.latecounter.model;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.realm.implementation.RealmBarData;
+import com.github.mikephil.charting.data.realm.implementation.RealmBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.google.inject.Inject;
 
 import org.roboguice.shaded.goole.common.base.Throwables;
+import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -35,7 +42,7 @@ class CounterRecordsRealmImpl implements CounterRecords {
                     realm.commitTransaction();
 
                     return realm.copyFromRealm(counterRecord);
-                } catch (Throwable t){
+                } catch (Throwable t) {
                     realm.cancelTransaction();
                     throw Throwables.propagate(t);
                 }
@@ -102,11 +109,42 @@ class CounterRecordsRealmImpl implements CounterRecords {
                     createNewCounterRecordInTransaction(realm, counterType, new Date(), 1);
                 } else {
                     CounterRecord counterRecord = todaysCount.first();
-                    counterRecord.setCount(counterRecord.getCount() +  1);
+                    counterRecord.setCount(counterRecord.getCount() + 1);
                 }
                 realm.commitTransaction();
             }
         });
+    }
+
+    @Override
+    public View getPlotViewForType(final Context context, final CounterType counterType) {
+        return realmSupplier.callWithRealm(
+                new RealmSupplier.RealmCallable<View>() {
+                    @Override
+                    public View call(Realm realm) {
+                        RealmResults<CounterRecord> counterRecordsOfType = realm.where(CounterRecord.class)
+                                .equalTo("counterType.description", counterType.getDescription())
+                                .findAll();
+
+                        RealmBarDataSet<CounterRecord> dataSet = new RealmBarDataSet<>(
+                                counterRecordsOfType,
+                                "count",
+                                null);
+                                //"date");
+
+                        RealmBarData realmBarData = new RealmBarData(
+                                counterRecordsOfType,
+                                "date",
+                                Lists.<IBarDataSet>newArrayList(dataSet));
+
+                        BarChart barChart = new BarChart(context);
+                        barChart.setData(realmBarData);
+                        barChart.invalidate();
+                        barChart.setDescription(counterType.getDescription());
+                        return barChart;
+                    }
+                }
+        );
     }
 
     private Date getStartOfToday() {
