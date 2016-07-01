@@ -88,8 +88,9 @@ public class MainActivity extends RoboActionBarActivity {
         graphTypeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO pass counter type for graphing.
-                startActivity(new Intent(MainActivity.this, GraphActivity.class));
+                Intent graphIntent = new Intent(MainActivity.this, GraphActivity.class);
+                graphIntent.putExtra(GraphActivity.COUNTER_TYPE_TO_GRAPH_EXTRA, counterType.getDescription());
+                startActivity(graphIntent);
             }
         });
 
