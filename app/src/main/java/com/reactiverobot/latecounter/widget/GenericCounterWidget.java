@@ -1,5 +1,6 @@
 package com.reactiverobot.latecounter.widget;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
@@ -16,6 +17,8 @@ import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
 
 import org.roboguice.shaded.goole.common.base.Optional;
+
+import java.util.Calendar;
 
 
 public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
@@ -79,6 +82,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 if (typeForWidget.isPresent()) {
                     counterRecords.incrementTodaysCount(typeForWidget.get());
 
+                    scheduleUpdateAtMidnight(context, appWidgetId);
+
                     onHandleUpdate(context, AppWidgetManager.getInstance(context), new int[]{appWidgetId});
                 } else {
                     Log.e("GenericCounterWidget", "Attempted to increment widget without type.");
@@ -92,5 +97,25 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             counterTypes.removeWidgetId(appWidgetId);
         }
+    }
+
+    private void scheduleUpdateAtMidnight(Context context, int widgetId) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.SECOND, 1);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+        Intent updateAtMidnightIntent = new Intent(context, CounterWidget.class);
+        updateAtMidnightIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        updateAtMidnightIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
+
+        PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, 32342,
+                updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcastIntent);
     }
 }
