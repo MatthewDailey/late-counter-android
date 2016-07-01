@@ -1,9 +1,7 @@
 package com.reactiverobot.latecounter.model;
 
-import android.content.Context;
-import android.view.View;
-
 import java.util.Date;
+import java.util.List;
 
 public interface CounterRecords {
     CounterRecord create(CounterType type, Date date, int count);
@@ -12,5 +10,5 @@ public interface CounterRecords {
 
     void incrementTodaysCount(CounterType counterType);
 
-    View getPlotViewForType(Context context, CounterType counterType);
+    List<CounterRecord> loadAllForTypeOrderedByDate(CounterType counterType);
 }
