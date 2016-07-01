@@ -1,6 +1,7 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.app.AlertDialog;
+import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import java.util.List;
 
@@ -32,40 +34,33 @@ public class MainActivity extends RoboActionBarActivity {
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
 
+    private ArrayAdapter<CounterType> counterTypeArrayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
 
         final List<CounterType> counterTypeList = counterTypes.loadAllTypes();
 
         ListView listView = (ListView) findViewById(R.id.main_counter_type_list);
 
-        listView.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return counterTypeList.size();
-            }
-
-            @Override
-            public CounterType getItem(int position) {
-                return counterTypeList.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
+        counterTypeArrayAdapter = new ArrayAdapter<CounterType>(
+                this,
+                R.layout.main_counter_type_list_item,
+                counterTypeList) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 return getViewForCounterType(getItem(position));
             }
-        });
+        };
 
+        listView.setAdapter(counterTypeArrayAdapter);
     }
 
     private View getViewForCounterType(final CounterType counterType) {
-        View counterTypeView = LayoutInflater.from(this).inflate(R.layout.counter_type_list_item, null);
+        View counterTypeView = LayoutInflater.from(this).inflate(R.layout.main_counter_type_list_item, null);
 
         TextView counterTypeDescriptionView = (TextView) counterTypeView.findViewById(R.id.main_counter_type_name);
         counterTypeDescriptionView.setText(counterType.getDescription());
@@ -76,15 +71,15 @@ public class MainActivity extends RoboActionBarActivity {
             public void onClick(View v) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Are you sure you want to delete the '"
-                                + counterType.getDescription() + "' counter?")
-                        .setPositiveButton("Yes.", new DialogInterface.OnClickListener() {
+                                + counterType.getDescription()
+                                + "' counter and all associated data?")
+                        .setPositiveButton("Yes, delete it.", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                counterTypes.deleteWithDescription(counterType.getDescription());
-                                counterRecords.deleteType(counterType);
+                                deleteCounterType(counterType);
                             }
                         })
-                        .setNegativeButton("Cancel.", null)
+                        .setNegativeButton("No.", null)
                         .show();
             }
         });
@@ -99,6 +94,21 @@ public class MainActivity extends RoboActionBarActivity {
         });
 
         return counterTypeView;
+    }
+
+    private void deleteCounterType(CounterType counterType) {
+        counterTypes.deleteWithDescription(counterType.getDescription());
+        counterRecords.deleteType(counterType);
+        broadcastUpdateWidget(counterType.getWidgetId());
+        counterTypeArrayAdapter.remove(counterType);
+    }
+
+    // TODO: Duplicated from {@link PickCounterTypeActivity}
+    private void broadcastUpdateWidget(int appWidgetId) {
+        Intent intent = new Intent(this, GenericCounterWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+        sendBroadcast(intent);
     }
 
     @Override
