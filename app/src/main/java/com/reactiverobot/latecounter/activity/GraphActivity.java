@@ -84,7 +84,10 @@ public class GraphActivity extends RoboActionBarActivity {
             synchronized (this) {
                 if (showingRealData) {
                     setTitle(counterType.getDescription() + " - Sample Data");
-                    setContentView(plotProvider.getPlot(getSampleCounterRecords()));
+                    setContentView(
+                            plotProvider.getPlot(
+                                getSampleCounterRecords(),
+                                counterType.getColorId()));
                     showingRealData = false;
                 } else {
                     setTitle(counterType.getDescription());

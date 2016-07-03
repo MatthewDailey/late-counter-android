@@ -13,7 +13,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.google.inject.Inject;
-import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
@@ -37,7 +36,7 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
     }
 
     @Override
-    public View getPlot(List<CounterRecord> records) {
+    public View getPlot(List<CounterRecord> records, int colorId) {
         int barEntryIndex = 0;
         List<Entry> barEntries = Lists.newArrayList();
         for (CounterRecord record : records) {
@@ -56,7 +55,7 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         // TODO: Make chart type configurable via prefs.
         // Pass empty string for description
         LineDataSet barDataSet = new LineDataSet(barEntries, "");
-        int dataSetColor = context.getResources().getColor(R.color.green);
+        int dataSetColor = context.getResources().getColor(colorId);
         barDataSet.setColor(dataSetColor);
         barDataSet.setCircleColor(dataSetColor);
         barDataSet.setCircleColorHole(dataSetColor);
@@ -77,7 +76,7 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         // Pin min Y-val to 0.
         barChart.getAxisLeft().setAxisMinValue(0);
 
-        barChart.setBackgroundColor(context.getResources().getColor(R.color.beige));
+//        barChart.setBackgroundColor(context.getResources().getColor(R.color.beige));
 
         // Hide the description in bottom-right of chart.
         barChart.setDescription("");
@@ -109,6 +108,7 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
     @Override
     public View getPlot(CounterType counterType) {
-        return getPlot(counterRecords.loadAllForTypeOrderedByDate(counterType));
+        return getPlot(counterRecords.loadAllForTypeOrderedByDate(counterType),
+                counterType.getColorId());
     }
 }
