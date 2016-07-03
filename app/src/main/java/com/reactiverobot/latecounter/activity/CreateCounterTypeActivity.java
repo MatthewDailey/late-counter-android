@@ -77,8 +77,10 @@ public class CreateCounterTypeActivity extends RoboActivity {
             if (resultCode == RESULT_OK) {
                 counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
                         android.R.color.black);
-                ((CircleButton) findViewById(R.id.pick_counter_color_button))
-                        .setColor(getResources().getColor(counterColorId));
+                int newColor = getResources().getColor(counterColorId);
+
+                ((CircleButton) findViewById(R.id.pick_counter_color_button)).setColor(newColor);
+                ((EditText) findViewById(R.id.create_counter_text)).setTextColor(newColor);
             }
         }
     }
