@@ -57,6 +57,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
 
                 views.setTextViewText(R.id.count_description, "Click to choose counter type.");
+                views.setViewVisibility(R.id.count_text, View.GONE);
                 views.setTextViewText(R.id.count_text, "");
 
                 PendingIntent pendingIntent = PendingIntent.getActivity(
