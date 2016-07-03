@@ -41,9 +41,14 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
 
+                int widgetColor = context.getResources().getColor(typeForWidget.get().getColorId());
+
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
+                views.setTextColor(R.id.count_description, widgetColor);
+
                 views.setViewVisibility(R.id.count_text, View.VISIBLE);
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
+                views.setTextColor(R.id.count_text, widgetColor);
 
                 Intent intent = new Intent(context, GenericCounterWidget.class);
                 intent.setAction(INCREMENT_COUNT_ACTION);
