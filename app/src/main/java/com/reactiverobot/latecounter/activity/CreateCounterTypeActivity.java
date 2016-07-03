@@ -34,8 +34,10 @@ public class CreateCounterTypeActivity extends RoboActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    // TODO: Set app widget color.
-                    counterTypes.createUniqueTypeForWidget(getNewDescription(), appWidgetId);
+                    counterTypes.createUniqueTypeForWidget(
+                            getNewDescription(),
+                            appWidgetId,
+                            counterColorId);
 
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, appWidgetId);

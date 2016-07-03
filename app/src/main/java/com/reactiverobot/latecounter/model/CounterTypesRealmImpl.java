@@ -154,7 +154,7 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public void createUniqueTypeForWidget(final String description, final int widgetId)
+    public void createUniqueTypeForWidget(final String description, final int widgetId, final int colorId)
             throws FailureCreatingCounterTypeException {
         final AtomicReference<String> errorMessage = new AtomicReference<>();
 
@@ -178,6 +178,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                     CounterType type = realm.createObject(CounterType.class);
                     type.setDescription(description);
                     type.setWidgetId(widgetId);
+                    type.setColorId(colorId);
                 }
 
                 realm.commitTransaction();

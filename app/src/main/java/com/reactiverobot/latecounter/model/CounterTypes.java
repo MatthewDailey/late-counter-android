@@ -20,7 +20,7 @@ public interface CounterTypes {
 
     void removeWidgetId(int widgetId);
 
-    void createUniqueTypeForWidget(String description, int widgetId)
+    void createUniqueTypeForWidget(String description, int widgetId, int colorId)
             throws FailureCreatingCounterTypeException;
 
     void deleteWithDescription(String description);

@@ -94,30 +94,31 @@ public class CounterTypeTest {
 
     @Test
     public void testCreateUnique() throws CounterTypes.FailureCreatingCounterTypeException {
-        counterTypes.createUniqueTypeForWidget("new-type", 1);
+        counterTypes.createUniqueTypeForWidget("new-type", 1, android.R.color.black);
 
         Optional<CounterType> type = counterTypes.getType("new-type");
         assertThat(type.get().getWidgetId(), is(equalTo(1)));
+        assertThat(type.get().getColorId(), is(equalTo(android.R.color.black)));
     }
 
     @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
     public void testCreateUniqueWithDuplicateDescription()
             throws CounterTypes.FailureCreatingCounterTypeException {
-        counterTypes.createUniqueTypeForWidget("new-type", 1);
-        counterTypes.createUniqueTypeForWidget("new-type", 2);
+        counterTypes.createUniqueTypeForWidget("new-type", 1, android.R.color.black);
+        counterTypes.createUniqueTypeForWidget("new-type", 2, 2);
     }
 
     @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
     public void testCreateUniqueWithDuplicateWidgetid()
             throws CounterTypes.FailureCreatingCounterTypeException {
-        counterTypes.createUniqueTypeForWidget("new-type", 1);
-        counterTypes.createUniqueTypeForWidget("different-new-type", 1);
+        counterTypes.createUniqueTypeForWidget("new-type", 1, android.R.color.black);
+        counterTypes.createUniqueTypeForWidget("different-new-type", 1, android.R.color.black);
     }
 
     @Test(expected = CounterTypes.FailureCreatingCounterTypeException.class)
     public void testCreateUniqueWithEmptyDescription()
             throws CounterTypes.FailureCreatingCounterTypeException {
-        counterTypes.createUniqueTypeForWidget("", 1);
+        counterTypes.createUniqueTypeForWidget("", 1, android.R.color.black);
     }
 
     @Test
