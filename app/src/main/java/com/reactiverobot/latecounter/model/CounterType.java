@@ -8,6 +8,7 @@ public class CounterType extends RealmObject {
     @PrimaryKey
     private String description;
     private int widgetId;
+    private int colorId;
 
     public String getDescription() {
         return description;
@@ -53,5 +54,13 @@ public class CounterType extends RealmObject {
     @Override
     public int hashCode() {
         return getDescription() != null ? getDescription().hashCode() : 0;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public void setColorId(int colorId) {
+        this.colorId = colorId;
     }
 }
