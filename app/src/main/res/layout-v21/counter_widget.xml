@@ -5,15 +5,15 @@
     android:layout_height="match_parent"
     android:id="@+id/whole_widget"
     android:background="@drawable/widget_background"
-    android:alpha="0.95"
-    android:layout_margin="1dp">
+    android:alpha="0.7"
+    android:layout_margin="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="4dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:layout_centerInParent="true">
 
         <TextView
@@ -24,8 +24,7 @@
             android:visibility="gone"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:textSize="30sp"
-            android:alpha="1"/>
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/count_description"
@@ -34,8 +33,7 @@
             android:text="Late Count"
             android:textSize="10sp"
             android:gravity="center"
-            android:textColor="@android:color/white"
-            android:alpha="1"/>
+            android:textColor="@android:color/white" />
 
 
     </LinearLayout>

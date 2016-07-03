@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Late Counter</string>
+    <string name="app_name">Counterz</string>
 
     <string name="select_counter_type">Select Counter Type</string>
     <string name="action_settings">Settings</string>
