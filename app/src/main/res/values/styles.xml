@@ -1,8 +1,7 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="CounterzTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/beige</item>
+        <item name="android:background">@color/beige</item>
     </style>
-
 </resources>

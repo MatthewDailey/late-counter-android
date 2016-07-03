@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="beige_dark" type="color">#E6DED4</item>
     <item name="beige" type="color">#EDE5DB</item>
     <item name="red" type="color">#FF2E39</item>
     <item name="green" type="color">#28D22C</item>
