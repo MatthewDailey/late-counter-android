@@ -10,16 +10,20 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_gravity="center_vertical">
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="New Counter Name"
             android:background="@android:color/transparent"
+            android:layout_gravity="center_vertical"
             android:textSize="20sp"
-            android:padding="16dp"
-            android:layout_margin="16dp"
             android:layout_weight="1"
+            android:layout_margin="8dp"
             android:id="@+id/create_counter_text">
         </EditText>
 
@@ -31,8 +35,7 @@
             android:layout_gravity="center"
             app:cb_pressedRingWidth="8dip"
             android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
+            android:layout_marginLeft="5dp"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,6 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Cancel"
+            android:background="?android:selectableItemBackground"
             android:id="@+id/create_counter_cancel"
             android:layout_weight="1" />
 
@@ -55,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create"
+            android:background="?android:selectableItemBackground"
             android:id="@+id/create_counter_submit"
             android:layout_weight="1" />
     </LinearLayout>
