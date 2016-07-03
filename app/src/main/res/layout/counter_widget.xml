@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/whole_widget">
+    android:id="@+id/whole_widget"
+    android:background="@drawable/widget_unpressed_background"
+    android:alpha="0.7"
+    android:layout_margin="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="4dp"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/count_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:visibility="gone"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/count_description"
@@ -19,18 +32,9 @@
             android:text="Late Count"
             android:textSize="10sp"
             android:gravity="center"
-            android:textColor="@android:color/holo_red_dark" />
-
-        <TextView
-            android:id="@+id/count_text"
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:text="0"
-            android:gravity="center"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="40sp" />
+            android:textColor="@android:color/white" />
 
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

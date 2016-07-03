@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.google.inject.Inject;
@@ -41,6 +42,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
 
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
+                views.setViewVisibility(R.id.count_text, View.VISIBLE);
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
 
                 Intent intent = new Intent(context, GenericCounterWidget.class);
@@ -48,7 +50,6 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 intent.putExtra(WIDGET_ID_EXTRA, widgetId);
                 PendingIntent incrementIntent = PendingIntent.getBroadcast(context, widgetId, intent,
                         PendingIntent.FLAG_CANCEL_CURRENT);
-
                 views.setOnClickPendingIntent(R.id.whole_widget, incrementIntent);
 
                 appWidgetManager.updateAppWidget(widgetId, views);
