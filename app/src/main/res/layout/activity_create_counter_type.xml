@@ -24,7 +24,7 @@
 
 
         <at.markushi.ui.CircleButton
-            android:id="@+id/choose_black_button"
+            android:id="@+id/pick_counter_color_button"
             android:layout_width="64dip"
             android:layout_height="64dip"
             app:cb_color="@android:color/black"

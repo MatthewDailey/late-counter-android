@@ -11,12 +11,15 @@ import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterTypes;
 
+import at.markushi.ui.CircleButton;
 import roboguice.activity.RoboActivity;
 
 public class CreateCounterTypeActivity extends RoboActivity {
 
     @Inject
     CounterTypes counterTypes;
+
+    private int counterColorId = android.R.color.black;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class CreateCounterTypeActivity extends RoboActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    // TODO: Set app widget color.
                     counterTypes.createUniqueTypeForWidget(getNewDescription(), appWidgetId);
 
                     Intent resultIntent = new Intent();
@@ -46,6 +50,15 @@ public class CreateCounterTypeActivity extends RoboActivity {
             }
         });
 
+        findViewById(R.id.pick_counter_color_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(
+                        new Intent(CreateCounterTypeActivity.this, PickCounterColorActivity.class),
+                        PickCounterColorActivity.PICK_COLOR_REQUEST_CODE);
+            }
+        });
+
         findViewById(R.id.create_counter_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,4 +71,16 @@ public class CreateCounterTypeActivity extends RoboActivity {
         return ((EditText) findViewById(R.id.create_counter_text)).getText().toString();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PickCounterColorActivity.PICK_COLOR_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                // Successfully created new counter type associated with the widget.
+                counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
+                        android.R.color.black);
+                ((CircleButton) findViewById(R.id.pick_counter_color_button))
+                        .setColor(getResources().getColor(counterColorId));
+            }
+        }
+    }
 }
