@@ -75,7 +75,6 @@ public class CreateCounterTypeActivity extends RoboActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PickCounterColorActivity.PICK_COLOR_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                // Successfully created new counter type associated with the widget.
                 counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
                         android.R.color.black);
                 ((CircleButton) findViewById(R.id.pick_counter_color_button))
