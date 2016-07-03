@@ -87,12 +87,32 @@ public class GraphActivity extends RoboActionBarActivity {
                     }
                 }));
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, counterType.getDescription());
+        // Pass empty string for description
+        BarDataSet barDataSet = new BarDataSet(barEntries, "");
+        barDataSet.setColor(getResources().getColor(R.color.green));
+
         BarData barData = new BarData(dates, barDataSet);
+
         BarChart barChart = new BarChart(this);
+
+        barChart.getLegend().setEnabled(false);
+
+        // Hide the right y-axis.
+        barChart.getAxisRight().setDrawLabels(false);
+        barChart.getAxisRight().setDrawGridLines(false);
+
+        // Pin min Y-val to 0.
+        barChart.getAxisLeft().setAxisMinValue(0);
+
+        barChart.setBackgroundColor(getResources().getColor(R.color.beige));
+
+        // Hide the description in bottom-right of chart.
+        barChart.setDescription("");
+
+        // Set data and tell chart to draw.
         barChart.setData(barData);
         barChart.invalidate();
-        barChart.setDescription(counterType.getDescription());
+
 
         if (records.size() > 7) {
             float numDesiredVisible = 7;
