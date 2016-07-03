@@ -15,6 +15,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
+import com.reactiverobot.latecounter.model.CounterRecords;
+import com.reactiverobot.latecounter.model.CounterType;
 
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.Iterables;
@@ -26,10 +28,12 @@ import java.util.List;
 class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
     private final Context context;
+    private final CounterRecords counterRecords;
 
     @Inject
-    PlotProviderMPAndroidChartImpl(Context context) {
+    PlotProviderMPAndroidChartImpl(Context context, CounterRecords counterRecords) {
         this.context = context;
+        this.counterRecords = counterRecords;
     }
 
     @Override
@@ -101,5 +105,10 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         xAxis.setTextSize(10f);
         xAxis.setTextColor(Color.BLACK);
         return barChart;
+    }
+
+    @Override
+    public View getPlot(CounterType counterType) {
+        return getPlot(counterRecords.loadAllForTypeOrderedByDate(counterType));
     }
 }

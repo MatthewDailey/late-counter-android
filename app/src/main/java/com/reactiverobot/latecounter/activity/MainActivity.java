@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+import com.reactiverobot.latecounter.plot.PlotProvider;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class MainActivity extends RoboActionBarActivity {
 
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
+    @Inject PlotProvider plotProvider;
 
     private ArrayAdapter<CounterType> counterTypeArrayAdapter;
 
@@ -58,7 +61,8 @@ public class MainActivity extends RoboActionBarActivity {
     }
 
     private View getViewForCounterType(final CounterType counterType) {
-        View counterTypeView = LayoutInflater.from(this).inflate(R.layout.main_counter_type_list_item, null);
+        ViewGroup counterTypeView = (LinearLayout) LayoutInflater.from(this)
+                .inflate(R.layout.main_counter_type_list_item, null);
 
         TextView counterTypeDescriptionView = (TextView) counterTypeView.findViewById(R.id.main_counter_type_name);
         counterTypeDescriptionView.setText(counterType.getDescription());
@@ -92,6 +96,11 @@ public class MainActivity extends RoboActionBarActivity {
             }
         });
 
+        View plot = plotProvider.getPlot(counterType);
+        plot.setMinimumHeight(300);
+        counterTypeView.addView(plot);
+
+        counterTypeView.setPadding(10, 10, 10, 60);
         return counterTypeView;
     }
 

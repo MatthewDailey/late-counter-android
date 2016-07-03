@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
-import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
 import com.reactiverobot.latecounter.plot.PlotProvider;
@@ -29,7 +28,6 @@ public class GraphActivity extends RoboActionBarActivity {
     public final static String COUNTER_TYPE_TO_GRAPH_EXTRA = "counter_type_to_graph";
 
     @Inject CounterTypes counterTypes;
-    @Inject CounterRecords counterRecords;
     @Inject PlotProvider plotProvider;
 
     @NonNull // after onCreate succeeds.
@@ -46,7 +44,7 @@ public class GraphActivity extends RoboActionBarActivity {
         if (counterTypeOption.isPresent()) {
             setTitle(counterTypeToGraph);
             counterType = counterTypeOption.get();
-            setChartFromRealData();
+            setContentView(plotProvider.getPlot(counterType));
         } else {
             Toast.makeText(this,
                     "There is no data for the type '" + counterTypeToGraph + "'.",
@@ -55,10 +53,6 @@ public class GraphActivity extends RoboActionBarActivity {
             finish();
         }
 
-    }
-
-    private void setChartFromRealData() {
-        setContentView(plotProvider.getPlot(counterRecords.loadAllForTypeOrderedByDate(counterType)));
     }
 
     @NonNull
@@ -94,7 +88,7 @@ public class GraphActivity extends RoboActionBarActivity {
                     showingRealData = false;
                 } else {
                     setTitle(counterType.getDescription());
-                    setChartFromRealData();
+                    setContentView(plotProvider.getPlot(counterType));
                     showingRealData = true;
                 }
             }
