@@ -36,6 +36,8 @@ dependencies {
 
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.5'
 
+    compile 'com.github.markushi:circlebutton:1.1'
+
     compile 'org.roboguice:roboguice:3.+'
     provided 'org.roboguice:roboblender:3.+'
 

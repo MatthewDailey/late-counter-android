@@ -25,7 +25,7 @@ public class CreateCounterTypeActivity extends RoboActivity {
         final int appWidgetId = getIntent().getIntExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, -1);
         // TODO: add check handling start activity without widgetId.
 
-        setContentView(R.layout.create_counter_type_layout);
+        setContentView(R.layout.activity_create_counter_type);
 
         findViewById(R.id.create_counter_submit).setOnClickListener(new View.OnClickListener() {
             @Override
