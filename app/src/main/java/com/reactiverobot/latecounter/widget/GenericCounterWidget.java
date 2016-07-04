@@ -59,6 +59,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                         PendingIntent.FLAG_CANCEL_CURRENT);
                 views.setOnClickPendingIntent(R.id.whole_widget, incrementIntent);
 
+                scheduleUpdateAtMidnight(context, widgetId);
+
                 appWidgetManager.updateAppWidget(widgetId, views);
             } else {
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
@@ -95,8 +97,6 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 Optional<CounterType> typeForWidget = counterTypes.getTypeForWidget(appWidgetId);
                 if (typeForWidget.isPresent()) {
                     counterRecords.incrementTodaysCount(typeForWidget.get());
-
-                    scheduleUpdateAtMidnight(context, appWidgetId);
 
                     onHandleUpdate(context, AppWidgetManager.getInstance(context), new int[]{appWidgetId});
                 } else {
