@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -26,6 +27,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
     private static final String INCREMENT_COUNT_ACTION = "increment_count_action";
     private static final String WIDGET_ID_EXTRA = "widget_id_extra";
+    public static final String TAG = "GenericCounterWidget";
 
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
@@ -85,7 +87,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
     @Override
     public void onHandleReceived(Context context, Intent intent) {
-        Log.d("GenericCounterWidget", "Received intent: " + intent.getAction());
+        Log.d(TAG, "Received intent: " + intent.getAction());
 
         if (INCREMENT_COUNT_ACTION.equals(intent.getAction())) {
             int appWidgetId = intent.getIntExtra(WIDGET_ID_EXTRA, -1);
@@ -124,10 +126,14 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
         updateAtMidnightIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetId});
 
         PendingIntent broadcastIntent = PendingIntent.getBroadcast(context, widgetId + 1,
-                updateAtMidnightIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                updateAtMidnightIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcastIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcastIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), broadcastIntent);
+        }
     }
 }
