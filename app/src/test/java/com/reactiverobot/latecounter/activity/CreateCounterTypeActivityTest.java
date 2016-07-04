@@ -62,7 +62,7 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
 
         submitButton.performClick();
 
-        verify(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId);
+        verify(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId, android.R.color.black);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
         newCounterNameText.setText("new type");
 
         doThrow(new CounterTypes.FailureCreatingCounterTypeException("test message"))
-            .when(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId);
+            .when(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId, android.R.color.black);
 
         submitButton.performClick();
 
