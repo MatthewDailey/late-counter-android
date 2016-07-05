@@ -101,7 +101,7 @@ public class PickCounterTypeActivity extends RoboActivity {
                     counterTypeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (counterTypesWithNoWidget.size() < prefs.getCounterLimit()
+                            if (counterTypes.loadAllTypes().size() < prefs.getCounterLimit()
                                     || prefs.isPremiumEnabled()) {
                                 startCreateCounterTypeActivityForResult(appWidgetId);
                             } else {

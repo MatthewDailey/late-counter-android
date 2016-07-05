@@ -154,7 +154,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testClickingOnFooterLaunchesCreateCounterWhenPremium() {
-        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+        when(mockModelModule.counterTypes.loadAllTypes())
                 .thenReturn(Lists.newArrayList(
                         CounterType.withDescription("type1"),
                         CounterType.withDescription("type2"),
@@ -166,8 +166,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
 
-        // 1 header, 3 body, 1 footer.
-        typeList.getAdapter().getView(4, null, null).performClick();
+        typeList.getAdapter().getView(1, null, null).performClick();
 
         Intent launchedIntent = shadowOf(pickCounterTypeActivity)
                 .getNextStartedActivityForResult()
@@ -179,7 +178,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testClickingOnFooterLaunchesReachedLimitWithoutPremium() {
-        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+        when(mockModelModule.counterTypes.loadAllTypes())
                 .thenReturn(Lists.newArrayList(
                         CounterType.withDescription("type1"),
                         CounterType.withDescription("type2"),
@@ -189,8 +188,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
 
-        // 1 header, 3 body, 1 footer.
-        typeList.getAdapter().getView(4, null, null).performClick();
+        typeList.getAdapter().getView(1, null, null).performClick();
 
         Intent launchedIntent = shadowOf(pickCounterTypeActivity)
                 .getNextStartedActivityForResult()
