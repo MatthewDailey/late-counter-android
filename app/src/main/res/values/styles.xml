@@ -5,13 +5,8 @@
         <item name="android:background">@color/beige</item>
     </style>
 
-    <style name="SelectableItemTheme">
-        <item name="colorControlHighlight">@color/red</item>
-    </style>
-
-    <style name="SelectableItemBackground">
-        <item name="android:theme">@style/SelectableItemTheme</item>
-        <item name="android:background">?attr/selectableItemBackground</item>
+    <style name="RippleButton" parent="Base.TextAppearance.AppCompat.Button">
+        <item name="android:textColor">@color/red</item>
     </style>
 
 </resources>
