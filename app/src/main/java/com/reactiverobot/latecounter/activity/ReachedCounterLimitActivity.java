@@ -33,8 +33,6 @@ public class ReachedCounterLimitActivity extends RoboActivity {
             }
         });
 
-        billingMachine.start();
-
         findViewById(R.id.reached_limit_buy_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
