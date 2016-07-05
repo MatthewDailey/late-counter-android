@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/whole_widget"
-    android:background="@drawable/widget_background"
+    android:background="@drawable/widget_shape"
     android:layout_margin="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="4dp"
+        android:background="@drawable/widget_background"
         android:layout_centerInParent="true">
 
         <TextView
@@ -27,7 +28,7 @@
         <TextView
             android:id="@+id/count_description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:text="@string/widget_initializing"
             android:textColor="@android:color/black"
             android:textSize="10sp"
