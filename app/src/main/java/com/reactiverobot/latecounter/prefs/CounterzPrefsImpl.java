@@ -18,5 +18,8 @@ class CounterzPrefsImpl implements CounterzPrefs {
         return context.getSharedPreferences("counterz_prefs", Context.MODE_PRIVATE);
     }
 
-
+    @Override
+    public boolean isPremiumEnabled() {
+        return false;
+    }
 }
