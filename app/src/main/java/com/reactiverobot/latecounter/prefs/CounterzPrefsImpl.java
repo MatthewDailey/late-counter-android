@@ -8,6 +8,7 @@ import com.google.inject.Inject;
 class CounterzPrefsImpl implements CounterzPrefs {
 
     public static final String PREMIUM_ENABLED_PREF = "premium_enabled";
+    private static final String USE_BAR_CHART_PREF = "use_bar_chart";
     private final Context context;
 
     @Inject
@@ -32,5 +33,15 @@ class CounterzPrefsImpl implements CounterzPrefs {
     @Override
     public int getCounterLimit() {
         return 3;
+    }
+
+    @Override
+    public void setShouldUseBarChart(boolean shouldUseBarChart) {
+        getPrefs().edit().putBoolean(USE_BAR_CHART_PREF, shouldUseBarChart).commit();
+    }
+
+    @Override
+    public boolean shouldUseBarChart() {
+        return getPrefs().getBoolean(USE_BAR_CHART_PREF, false);
     }
 }

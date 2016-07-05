@@ -45,4 +45,15 @@ public class CounterzPrefsRoboTest extends AbstractRoboTest{
         assertThat(instance.getCounterLimit(), is(equalTo(3)));
     }
 
+    @Test
+    public void testUseBarChart() {
+        assertThat(instance.shouldUseBarChart(), is(false));
+    }
+
+    @Test
+    public void testSetUseBarChart() {
+        instance.setShouldUseBarChart(true);
+        assertThat(instance.shouldUseBarChart(), is(true));
+    }
+
 }
