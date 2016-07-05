@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterTypes;
-import com.reactiverobot.latecounter.model.MockModelModule;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 import org.robolectric.shadows.ShadowToast;
@@ -25,14 +22,6 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 public class CreateCounterTypeActivityTest extends AbstractRoboTest {
-
-    @Rule
-    public MockModelModule mockModelModule = new MockModelModule();
-
-    @Override
-    protected Module[] getModules() {
-        return new Module[]{mockModelModule};
-    }
 
     private final int testAppWidgetId = 2;
 

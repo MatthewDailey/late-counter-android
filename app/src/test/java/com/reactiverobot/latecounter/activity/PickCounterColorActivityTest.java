@@ -2,12 +2,9 @@ package com.reactiverobot.latecounter.activity;
 
 import android.app.Activity;
 
-import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
-import com.reactiverobot.latecounter.model.MockModelModule;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
@@ -19,14 +16,6 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 public class PickCounterColorActivityTest extends AbstractRoboTest {
-
-    @Rule
-    public MockModelModule mockModelModule = new MockModelModule();
-
-    @Override
-    protected Module[] getModules() {
-        return new Module[]{mockModelModule};
-    }
 
     @Override
     protected void setup() {

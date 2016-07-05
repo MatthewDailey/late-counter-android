@@ -8,15 +8,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.common.collect.Lists;
-import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
-import com.reactiverobot.latecounter.model.MockModelModule;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.Robolectric;
@@ -24,7 +21,8 @@ import org.robolectric.shadows.ShadowAppWidgetManager;
 
 import java.util.Date;
 
-import static com.reactiverobot.latecounter.activity.PickCounterTypeActivity.*;
+import static com.reactiverobot.latecounter.activity.PickCounterTypeActivity.WIDGET_ID_EXTRA;
+import static com.reactiverobot.latecounter.activity.PickCounterTypeActivity.getStartIntent;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
@@ -37,14 +35,6 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 public class PickCounterTypeActivityTest extends AbstractRoboTest {
-
-    @Rule
-    public MockModelModule mockModelModule = new MockModelModule();
-
-    @Override
-    protected Module[] getModules() {
-        return new Module[]{mockModelModule};
-    }
 
     private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;

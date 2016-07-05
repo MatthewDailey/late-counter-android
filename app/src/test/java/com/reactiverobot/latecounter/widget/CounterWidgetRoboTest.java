@@ -6,16 +6,12 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.inject.Module;
 import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.activity.PickCounterTypeActivity;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
-import com.reactiverobot.latecounter.model.MockModelModule;
-import com.reactiverobot.latecounter.prefs.PrefsModule;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.roboguice.shaded.goole.common.base.Optional;
 import org.robolectric.shadows.ShadowAppWidgetManager;
@@ -37,8 +33,6 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;
 
-    @Rule
-    public MockModelModule mockModelModule = new MockModelModule();
     private Intent nextStartedActivity;
     private Intent broadcastIntent;
 
@@ -60,11 +54,6 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
                 shadowOf(AppWidgetManager.getInstance(context));
         widgetId = shadowAppWidgetManager
                 .createWidget(GenericCounterWidget.class, R.layout.counter_widget);
-    }
-
-    @Override
-    protected Module[] getModules() {
-        return new Module[]{mockModelModule, new PrefsModule()};
     }
 
     @Test
