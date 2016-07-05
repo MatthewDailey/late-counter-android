@@ -12,6 +12,7 @@ import com.reactiverobot.latecounter.AbstractRoboTest;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
+import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
     private ShadowAppWidgetManager shadowAppWidgetManager;
     private int widgetId;
     private Activity pickCounterTypeActivity;
+    private CounterzPrefs prefs;
 
     @Override
     protected void setup() {
@@ -47,6 +49,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         shadowAppWidgetManager = shadowOf(AppWidgetManager.getInstance(context));
         widgetId = shadowAppWidgetManager.createWidget(GenericCounterWidget.class, R.layout.counter_widget);
+        prefs = injector.getInstance(CounterzPrefs.class);
     }
 
     private void setupActivity() {
@@ -134,7 +137,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
     }
 
     @Test
-    public void testClickingOnFooterLaunchesCreateCounter() {
+    public void testClickingOnFooterLaunchesCreateCounterWhenNoTypesExist() {
         setupActivity();
 
         ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
@@ -147,6 +150,53 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
         assertThat(CreateCounterTypeActivity.class.getName(),
                 is(equalTo(launchedIntent.getComponent().getClassName())));
         assertThat(launchedIntent.getIntExtra(WIDGET_ID_EXTRA, -1), is(equalTo(widgetId)));
+    }
+
+    @Test
+    public void testClickingOnFooterLaunchesCreateCounterWhenPremium() {
+        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+                .thenReturn(Lists.newArrayList(
+                        CounterType.withDescription("type1"),
+                        CounterType.withDescription("type2"),
+                        CounterType.withDescription("type3")));
+
+        setupActivity();
+
+        prefs.enablePremium();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+
+        // 1 header, 3 body, 1 footer.
+        typeList.getAdapter().getView(4, null, null).performClick();
+
+        Intent launchedIntent = shadowOf(pickCounterTypeActivity)
+                .getNextStartedActivityForResult()
+                .intent;
+        assertThat(CreateCounterTypeActivity.class.getName(),
+                is(equalTo(launchedIntent.getComponent().getClassName())));
+        assertThat(launchedIntent.getIntExtra(WIDGET_ID_EXTRA, -1), is(equalTo(widgetId)));
+    }
+
+    @Test
+    public void testClickingOnFooterLaunchesReachedLimitWithoutPremium() {
+        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+                .thenReturn(Lists.newArrayList(
+                        CounterType.withDescription("type1"),
+                        CounterType.withDescription("type2"),
+                        CounterType.withDescription("type3")));
+
+        setupActivity();
+
+        ListView typeList = (ListView) pickCounterTypeActivity.findViewById(R.id.counter_type_list_view);
+
+        // 1 header, 3 body, 1 footer.
+        typeList.getAdapter().getView(4, null, null).performClick();
+
+        Intent launchedIntent = shadowOf(pickCounterTypeActivity)
+                .getNextStartedActivityForResult()
+                .intent;
+        assertThat(ReachedCounterLimitActivity.class.getName(),
+                is(equalTo(launchedIntent.getComponent().getClassName())));
     }
 
     @Test

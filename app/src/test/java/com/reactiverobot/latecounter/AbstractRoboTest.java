@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.google.inject.Module;
 import com.reactiverobot.latecounter.model.MockModelModule;
+import com.reactiverobot.latecounter.prefs.PrefsModule;
 
 import org.junit.After;
 import org.junit.Before;
@@ -45,7 +46,7 @@ public abstract class AbstractRoboTest {
      * Override this to enable more detailed dependency injection mocks.
      */
     protected Module[] getModules() {
-        return new Module[]{mockModelModule};
+        return new Module[]{mockModelModule, new PrefsModule()};
     }
 
     @After

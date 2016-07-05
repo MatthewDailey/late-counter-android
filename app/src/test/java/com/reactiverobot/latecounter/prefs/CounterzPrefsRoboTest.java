@@ -5,6 +5,7 @@ import com.reactiverobot.latecounter.AbstractRoboTest;
 
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -39,5 +40,9 @@ public class CounterzPrefsRoboTest extends AbstractRoboTest{
         assertThat(instance.isPremiumEnabled(), is(true));
     }
 
+    @Test
+    public void testGetCounterLimit() {
+        assertThat(instance.getCounterLimit(), is(equalTo(3)));
+    }
 
 }

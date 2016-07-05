@@ -16,6 +16,7 @@ import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
+import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import org.roboguice.shaded.goole.common.base.Preconditions;
@@ -36,6 +37,7 @@ public class PickCounterTypeActivity extends RoboActivity {
     public final static String WIDGET_ID_EXTRA = "AppWidgetId";
 
     @Inject CounterTypes counterTypes;
+    @Inject CounterzPrefs prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +101,13 @@ public class PickCounterTypeActivity extends RoboActivity {
                     counterTypeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startCreateCounterTypeActivityForResult(appWidgetId);
+                            if (counterTypesWithNoWidget.size() < prefs.getCounterLimit()
+                                    || prefs.isPremiumEnabled()) {
+                                startCreateCounterTypeActivityForResult(appWidgetId);
+                            } else {
+                                startReachedCounterLimitActivity();
+                            }
+
                         }
                     });
 
@@ -146,6 +154,10 @@ public class PickCounterTypeActivity extends RoboActivity {
         Intent intent = new Intent(this, CreateCounterTypeActivity.class);
         intent.putExtra(WIDGET_ID_EXTRA, appWidgetId);
         startActivityForResult(intent, CREATE_COUNTER_TYPE_REQUEST_CODE);
+    }
+
+    private void startReachedCounterLimitActivity() {
+        startActivity(new Intent(this, ReachedCounterLimitActivity.class));
     }
 
     @Override
