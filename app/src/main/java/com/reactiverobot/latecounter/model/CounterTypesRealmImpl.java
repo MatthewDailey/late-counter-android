@@ -27,33 +27,7 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public CounterType createSafely(final String description) {
-        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
-            @Override
-            public CounterType call(Realm realm) {
-                realm.beginTransaction();
-                CounterType counterType = realm.createObject(CounterType.class);
-                try {
-                    counterType.setDescription(description);
-                    counterType.setWidgetId(NO_WIDGET_ID);
-
-                    realm.commitTransaction();
-
-                    return counterType;
-                } catch (RealmPrimaryKeyConstraintException e) {
-                    counterType.deleteFromRealm();
-                    realm.commitTransaction();
-
-                    return getType(description).get();
-                } catch (Throwable e) {
-                    throw Throwables.propagate(e);
-                }
-            }
-        });
-    }
-
-    @Override
-    public CounterType createSafelyWithWidgetId(final String description, final int widgetId) {
+    public CounterType updateWidgetForType(final String description, final int widgetId) {
         return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
             @Override
             public CounterType call(Realm realm) {

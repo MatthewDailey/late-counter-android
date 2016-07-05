@@ -6,9 +6,8 @@ import org.roboguice.shaded.goole.common.base.Optional;
 import java.util.List;
 
 public interface CounterTypes {
-    CounterType createSafely(String description);
 
-    CounterType createSafelyWithWidgetId(String description, int widgetId);
+    CounterType updateWidgetForType(String description, int widgetId);
 
     Optional<CounterType> getType(String description);
 

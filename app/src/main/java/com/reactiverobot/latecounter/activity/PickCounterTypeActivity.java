@@ -119,7 +119,7 @@ public class PickCounterTypeActivity extends RoboActivity {
                     counterTypeView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            counterTypes.createSafelyWithWidgetId(type.getDescription(), appWidgetId);
+                            counterTypes.updateWidgetForType(type.getDescription(), appWidgetId);
                             broadcastUpdateWidget(appWidgetId);
                             finish();
                         }

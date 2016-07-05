@@ -124,7 +124,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         typeList.getAdapter().getView(1, null, null).performClick();
 
-        verify(mockModelModule.counterTypes).createSafelyWithWidgetId("type", widgetId);
+        verify(mockModelModule.counterTypes).updateWidgetForType("type", widgetId);
 
         View widgetView = shadowAppWidgetManager.getViewFor(widgetId);
         TextView countView = (TextView) widgetView.findViewById(R.id.count_text);
