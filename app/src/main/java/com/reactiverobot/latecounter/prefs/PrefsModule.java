@@ -10,6 +10,6 @@ public class PrefsModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(LateCounterPrefs.class).to(LateCounterPrefsImpl.class);
+        bind(CounterzPrefs.class).to(CounterzPrefsImpl.class);
     }
 }
