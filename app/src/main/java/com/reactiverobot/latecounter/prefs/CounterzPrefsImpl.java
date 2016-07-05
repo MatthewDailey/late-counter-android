@@ -28,4 +28,9 @@ class CounterzPrefsImpl implements CounterzPrefs {
     public void enablePremium() {
         getPrefs().edit().putBoolean(PREMIUM_ENABLED_PREF, true).commit();
     }
+
+    @Override
+    public int getCounterLimit() {
+        return 3;
+    }
 }
