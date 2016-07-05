@@ -35,51 +35,40 @@ class BillingMachineImpl implements BillingMachine {
     }
 
     @Override
-    public synchronized void start() {
-        iabStartLatch = new CountDownLatch(1);
+    public synchronized void shutdown() {
+        if (iabHelper != null) {
+            try {
+                iabHelper.dispose();
+            } catch (IabHelper.IabAsyncInProgressException e) {
+                e.printStackTrace();
+                // TODO
+            }
+        }
+    }
 
-        this.iabHelper = new IabHelper(context, base64EncodedPublicKey);
-
+    @Override
+    public synchronized void launchPurchasePremiumFlow(final Activity callingActivity,
+                                                       final PurchaseFlowCompletedHandler completedHandler) {
+        iabHelper = new IabHelper(context, base64EncodedPublicKey);
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 Log.d(TAG, "Setup finished.");
-                iabStartLatch.countDown();
+                try {
+                    iabHelper.launchPurchaseFlow(callingActivity, SKU_PREMIUM, PREMIUM_REQUEST,
+                            new IabHelper.OnIabPurchaseFinishedListener() {
+                                @Override
+                                public void onIabPurchaseFinished(IabResult result, Purchase info) {
+                                    Log.d(TAG, "Purchase finished. result: " + result + " purchase: " + info);
+                                    completedHandler.handleResult(result, info);
+                                }
+                            }, getDeveloperPayload());
+                } catch (IabHelper.IabAsyncInProgressException e) {
+                    e.printStackTrace();
+                    // TODO
+                }
                 Log.d(TAG, "Setup successful.");
             }
         });
-    }
-
-    @Override
-    public synchronized void shutdown() {
-        try {
-            iabHelper.dispose();
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
-            // TODO
-        }
-        iabHelper = null;
-    }
-
-    @Override
-    public synchronized void launchPurchasePremiumFlow(Activity callingActivity,
-                                                       final PurchaseFlowCompletedHandler completedHandler) {
-        if (iabHelper == null) {
-            // TODO
-            return;
-        }
-        try {
-            iabHelper.launchPurchaseFlow(callingActivity, SKU_PREMIUM, PREMIUM_REQUEST,
-                    new IabHelper.OnIabPurchaseFinishedListener() {
-                        @Override
-                        public void onIabPurchaseFinished(IabResult result, Purchase info) {
-                            Log.d(TAG, "Purchase finished. result: " + result + " purchase: " + info);
-                            completedHandler.handleResult(result, info);
-                        }
-                    }, getDeveloperPayload());
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
-            // TODO
-        }
     }
 
     private boolean verifyDeveloperPayload(Purchase premiumPurchase) {
@@ -93,22 +82,4 @@ class BillingMachineImpl implements BillingMachine {
         return "";
     }
 
-    // Unused, for informative purposes only.
-    private synchronized boolean hasPurchasedPremium() {
-        if (iabHelper != null) {
-            try {
-                iabStartLatch.await();
-
-                Purchase premiumPurchase = iabHelper.queryInventory().getPurchase(SKU_PREMIUM);
-                return premiumPurchase != null && verifyDeveloperPayload(premiumPurchase);
-            } catch (IabException e) {
-                e.printStackTrace();
-                // TODO
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                // TODO
-            }
-        }
-        return false;
-    }
 }
