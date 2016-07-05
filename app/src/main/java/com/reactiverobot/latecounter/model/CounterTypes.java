@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface CounterTypes {
 
-    CounterType updateWidgetForType(String description, int widgetId);
-
     Optional<CounterType> getType(String description);
 
     Optional<CounterType> getTypeForWidget(int widgetId);
@@ -19,15 +17,17 @@ public interface CounterTypes {
 
     void removeWidgetId(int widgetId);
 
-    void createUniqueTypeForWidget(String description, int widgetId, int colorId)
-            throws FailureCreatingCounterTypeException;
+    CounterType createUniqueTypeForWidget(String description, int widgetId, int colorId)
+            throws CounterTypesException;
+
+    CounterType updateWidgetForType(String description, int widgetId);
 
     void deleteWithDescription(String description);
 
-    class FailureCreatingCounterTypeException extends Exception {
+    class CounterTypesException extends Exception {
         public final String message;
 
-        public FailureCreatingCounterTypeException(String message) {
+        public CounterTypesException(String message) {
             this.message = message;
         }
     }

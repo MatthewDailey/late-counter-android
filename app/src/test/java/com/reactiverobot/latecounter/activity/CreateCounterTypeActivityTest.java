@@ -46,7 +46,7 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
     }
 
     @Test
-    public void testCreateButtonCreatesCounterType() throws CounterTypes.FailureCreatingCounterTypeException {
+    public void testCreateButtonCreatesCounterType() throws CounterTypes.CounterTypesException {
         newCounterNameText.setText("new type");
 
         submitButton.performClick();
@@ -56,10 +56,10 @@ public class CreateCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testShowToastWithErrorMessageIfFailToCreate()
-            throws CounterTypes.FailureCreatingCounterTypeException {
+            throws CounterTypes.CounterTypesException {
         newCounterNameText.setText("new type");
 
-        doThrow(new CounterTypes.FailureCreatingCounterTypeException("test message"))
+        doThrow(new CounterTypes.CounterTypesException("test message"))
             .when(mockModelModule.counterTypes).createUniqueTypeForWidget("new type", testAppWidgetId, android.R.color.black);
 
         submitButton.performClick();

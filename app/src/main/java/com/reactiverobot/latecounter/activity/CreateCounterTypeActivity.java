@@ -44,7 +44,7 @@ public class CreateCounterTypeActivity extends RoboActivity {
 
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
-                } catch (CounterTypes.FailureCreatingCounterTypeException e) {
+                } catch (CounterTypes.CounterTypesException e) {
                     Toast.makeText(CreateCounterTypeActivity.this,
                             e.message,
                             Toast.LENGTH_SHORT).show();

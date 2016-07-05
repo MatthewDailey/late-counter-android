@@ -9,7 +9,6 @@ import org.roboguice.shaded.goole.common.base.Optional;
 import org.roboguice.shaded.goole.common.base.Throwables;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -128,39 +127,39 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public void createUniqueTypeForWidget(final String description, final int widgetId, final int colorId)
-            throws FailureCreatingCounterTypeException {
-        final AtomicReference<String> errorMessage = new AtomicReference<>();
+    public CounterType createUniqueTypeForWidget(final String description, final int widgetId, final int colorId)
+            throws CounterTypesException {
+        try {
+            return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
+                @Override
+                public CounterType call(Realm realm) {
+                    realm.beginTransaction();
 
-        realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
-            @Override
-            public void run(Realm realm) {
-                realm.beginTransaction();
+                    if (description.isEmpty()) {
+                        throw new RuntimeException("Counter description must not be empty.");
+                    } else if (!realm.where(CounterType.class)
+                            .equalTo("widgetId", widgetId)
+                            .findAll().isEmpty()) {
+                        throw new RuntimeException("This widget has a counter already. " +
+                                "Please close everything and try again.");
+                    } else if (!realm.where(CounterType.class)
+                            .equalTo("description", description)
+                            .findAll().isEmpty()) {
+                        throw new RuntimeException("There is already a widget for this counter.");
+                    } else {
+                        CounterType type = realm.createObject(CounterType.class);
+                        type.setDescription(description);
+                        type.setWidgetId(widgetId);
+                        type.setColorId(colorId);
 
-                if (description.isEmpty()) {
-                    errorMessage.set("Counter description must not be empty.");
-                } else if (!realm.where(CounterType.class)
-                        .equalTo("widgetId", widgetId)
-                        .findAll().isEmpty()) {
-                    errorMessage.set("This widget has a counter already. " +
-                                     "Please close everything and try again.");
-                } else if (!realm.where(CounterType.class)
-                        .equalTo("description", description)
-                        .findAll().isEmpty()) {
-                    errorMessage.set("There is already a widget for this counter.");
-                } else {
-                    CounterType type = realm.createObject(CounterType.class);
-                    type.setDescription(description);
-                    type.setWidgetId(widgetId);
-                    type.setColorId(colorId);
+                        realm.commitTransaction();
+
+                        return realm.copyFromRealm(type);
+                    }
                 }
-
-                realm.commitTransaction();
-            }
-        });
-
-        if (errorMessage.get() != null) {
-            throw new FailureCreatingCounterTypeException(errorMessage.get());
+            });
+        } catch (Throwable t) {
+            throw new CounterTypesException(t.getMessage());
         }
     }
 
