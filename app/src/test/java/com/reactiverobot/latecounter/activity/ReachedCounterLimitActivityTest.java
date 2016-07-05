@@ -24,4 +24,10 @@ public class ReachedCounterLimitActivityTest extends AbstractRoboTest {
         assertThat(activity.findViewById(R.id.reached_limit_buy_button), is(notNullValue()));
     }
 
+    @Test
+    public void testCancelFinishesActivity() {
+        activity.findViewById(R.id.reached_limit_cancel).performClick();
+
+        assertThat(activity.isFinishing(), is(true));
+    }
 }
