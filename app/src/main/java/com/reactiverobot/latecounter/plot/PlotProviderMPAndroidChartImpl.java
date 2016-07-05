@@ -62,6 +62,7 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         barDataSet.setLineWidth(5);
         barDataSet.setCircleRadius(7);
         barDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+        barDataSet.setHighLightColor(dataSetColor);
 
         LineData barData = new LineData(dates, barDataSet);
 
@@ -69,12 +70,13 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
         barChart.getLegend().setEnabled(false);
 
-        // Hide the right y-axis.
-        barChart.getAxisRight().setDrawLabels(false);
-        barChart.getAxisRight().setDrawGridLines(false);
+        // Hide y-axis.
+        barChart.getAxisRight().setEnabled(false);
+        barChart.getAxisLeft().setEnabled(false);
 
         // Pin min Y-val to 0.
         barChart.getAxisLeft().setAxisMinValue(0);
+        barChart.setScaleYEnabled(false);
 
 //        barChart.setBackgroundColor(context.getResources().getColor(R.color.beige));
 
@@ -84,7 +86,6 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         // Set data and tell chart to draw.
         barChart.setData(barData);
         barChart.invalidate();
-
 
         if (records.size() > 7) {
             float numDesiredVisible = 7;
@@ -101,8 +102,11 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         xAxis.setDrawGridLines(false);
 
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(10f);
+        xAxis.setTextSize(12f);
         xAxis.setTextColor(Color.BLACK);
+        xAxis.setLabelRotationAngle(-90f);
+        xAxis.setSpaceBetweenLabels(0);
+//        xAxis.setAvoidFirstLastClipping(true);
         return barChart;
     }
 

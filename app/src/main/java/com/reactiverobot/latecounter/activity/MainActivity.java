@@ -97,7 +97,7 @@ public class MainActivity extends RoboActionBarActivity {
         });
 
         View plot = plotProvider.getPlot(counterType);
-        plot.setMinimumHeight(300);
+        plot.setMinimumHeight(500);
         counterTypeView.addView(plot);
 
         counterTypeView.setPadding(10, 10, 10, 60);
