@@ -33,5 +33,11 @@ public class CounterzPrefsRoboTest extends AbstractRoboTest{
         assertThat(instance.isPremiumEnabled(), is(false));
     }
 
+    @Test
+    public void testCanEnablePremium() {
+        instance.enablePremium();
+        assertThat(instance.isPremiumEnabled(), is(true));
+    }
+
 
 }

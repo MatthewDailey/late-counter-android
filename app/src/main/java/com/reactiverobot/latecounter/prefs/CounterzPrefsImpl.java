@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 
 class CounterzPrefsImpl implements CounterzPrefs {
 
+    public static final String PREMIUM_ENABLED_PREF = "premium_enabled";
     private final Context context;
 
     @Inject
@@ -20,6 +21,11 @@ class CounterzPrefsImpl implements CounterzPrefs {
 
     @Override
     public boolean isPremiumEnabled() {
-        return false;
+        return getPrefs().getBoolean(PREMIUM_ENABLED_PREF, false);
+    }
+
+    @Override
+    public void enablePremium() {
+        getPrefs().edit().putBoolean(PREMIUM_ENABLED_PREF, true).commit();
     }
 }
