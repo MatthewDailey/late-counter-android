@@ -53,10 +53,9 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
                 views.setTextColor(R.id.count_text, widgetColor);
 
-                if (widgetColorId == R.color.red) {
-                    Log.v(TAG, "setting background resource to red");
-                    views.setInt(R.id.widget_view_group, "setBackgroundResource", R.drawable.widget_ripple_red);
-                }
+                views.setInt(R.id.widget_view_group,
+                        "setBackgroundResource",
+                        getWidgetRippleBackgroundId(widgetColorId));
 
                 Intent intent = new Intent(context, GenericCounterWidget.class);
                 intent.setAction(INCREMENT_COUNT_ACTION);
@@ -90,6 +89,23 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
                 appWidgetManager.updateAppWidget(widgetId, views);
             }
+        }
+    }
+
+    private int getWidgetRippleBackgroundId(int widgetColorId) {
+        switch (widgetColorId) {
+            case R.color.red:
+                return R.drawable.widget_ripple_red;
+            case R.color.yellow:
+                return R.drawable.widget_ripple_yellow;
+            case R.color.green:
+                return R.drawable.widget_ripple_green;
+            case R.color.blue:
+                return R.drawable.widget_ripple_blue;
+            case android.R.color.black:
+                return R.drawable.widget_ripple_black;
+            default:
+                return R.drawable.widget_ripple_white;
         }
     }
 
