@@ -35,6 +35,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                 try {
                     counterType.setDescription(description);
                     counterType.setWidgetId(widgetId);
+                    counterType.setColorId(android.R.color.black);
 
                     realm.commitTransaction();
 

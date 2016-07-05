@@ -20,6 +20,14 @@ public interface CounterTypes {
     CounterType createUniqueTypeForWidget(String description, int widgetId, int colorId)
             throws CounterTypesException;
 
+    /**
+     * Updates the app widget associated with a given type. Creates the type with color BLACK
+     * if no such type exists.
+     *
+     * @param description Description of the type to be created.
+     * @param widgetId Id of the app widget newly associated with the type.
+     * @return {@link CounterType} which was updated or newly created.
+     */
     CounterType updateWidgetForType(String description, int widgetId);
 
     void deleteWithDescription(String description);
