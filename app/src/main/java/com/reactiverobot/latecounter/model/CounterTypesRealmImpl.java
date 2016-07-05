@@ -75,12 +75,12 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public Optional<CounterType> getTypeForWidget(final int widgetId) {
+    public Optional<CounterType> getTypeForWidget(final int appWidgetId) {
         return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<Optional<CounterType>>() {
             @Override
             public Optional<CounterType> call(Realm realm) {
                 RealmResults<CounterType> counterType = realm.where(CounterType.class)
-                        .equalTo("widgetId", widgetId)
+                        .equalTo("widgetId", appWidgetId)
                         .findAll();
                 if (counterType.isEmpty()) {
                     return Optional.absent();
@@ -112,13 +112,13 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public void removeWidgetId(final int widgetId) {
+    public void removeWidgetId(final int appWidgetId) {
         realmSupplier.runWithRealm(new RealmSupplier.RealmRunnable() {
             @Override
             public void run(Realm realm) {
                 realm.beginTransaction();
 
-                for (CounterType type : loadTypesWithWidgetId(realm, widgetId).findAll()) {
+                for (CounterType type : loadTypesWithWidgetId(realm, appWidgetId).findAll()) {
                     type.setWidgetId(NO_WIDGET_ID);
                 }
 
@@ -128,7 +128,7 @@ class CounterTypesRealmImpl implements CounterTypes {
     }
 
     @Override
-    public CounterType createUniqueTypeForWidget(final String description, final int widgetId, final int colorId)
+    public CounterType createUniqueTypeForWidget(final String description, final int appWidgetId, final int colorId)
             throws CounterTypesException {
         try {
             return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
@@ -139,7 +139,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                     if (description.isEmpty()) {
                         throw new RuntimeException("Counter description must not be empty.");
                     } else if (!realm.where(CounterType.class)
-                            .equalTo("widgetId", widgetId)
+                            .equalTo("widgetId", appWidgetId)
                             .findAll().isEmpty()) {
                         throw new RuntimeException("This widget has a counter already. " +
                                 "Please close everything and try again.");
@@ -150,7 +150,7 @@ class CounterTypesRealmImpl implements CounterTypes {
                     } else {
                         CounterType type = realm.createObject(CounterType.class);
                         type.setDescription(description);
-                        type.setWidgetId(widgetId);
+                        type.setWidgetId(appWidgetId);
                         type.setColorId(colorId);
 
                         realm.commitTransaction();
