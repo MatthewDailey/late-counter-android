@@ -3,8 +3,11 @@ package com.reactiverobot.latecounter.plot;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.BarLineChartBase;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -26,6 +29,7 @@ import java.util.List;
 
 class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
+    public static final int IDEAL_NUMBER_OF_VISIBLE_DATA_POINTS = 7;
     private final Context context;
     private final CounterRecords counterRecords;
 
@@ -37,77 +41,97 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
     @Override
     public View getPlot(List<CounterRecord> records, int colorId) {
-        int barEntryIndex = 0;
-        List<Entry> barEntries = Lists.newArrayList();
-        for (CounterRecord record : records) {
-            barEntries.add(new BarEntry(record.getCount(), barEntryIndex++, record.getDate()));
-        }
+        int dataSetColor = context.getResources().getColor(colorId);
 
+        // TODO: Make chart type configurable via prefs.
+        // Pass empty string for description
+        BarLineChartBase chart = getLineChart(records, dataSetColor);
+
+        chart.getLegend().setEnabled(false);
+        chart.setDescription("");
+
+        setupChartZoom(records, chart);
+
+        setupYAxis(chart);
+        setupXAxis(chart);
+
+        return chart;
+    }
+
+    @NonNull
+    private BarLineChartBase getLineChart(List<CounterRecord> records, int dataSetColor) {
+        LineDataSet dataSet = new LineDataSet(getYAxisValues(records), "");
+        dataSet.setColor(dataSetColor);
+        dataSet.setCircleColor(dataSetColor);
+        dataSet.setCircleColorHole(dataSetColor);
+        dataSet.setHighLightColor(dataSetColor);
+        dataSet.setLineWidth(5);
+        dataSet.setCircleRadius(7);
+        dataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+
+        BarLineChartBase chart = new LineChart(context);
+        chart.setData(new LineData(getXAxisValues(records), dataSet));
+        return chart;
+    }
+
+    @NonNull
+    private List<String> getXAxisValues(List<CounterRecord> records) {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d yyyy");
-        List<String> dates = Lists.newArrayList(Iterables.transform(records,
+        return Lists.newArrayList(Iterables.transform(records,
                 new Function<CounterRecord, String>() {
                     @Override
                     public String apply(CounterRecord counterRecord) {
                         return dateFormat.format(counterRecord.getDate());
                     }
                 }));
+    }
 
-        // TODO: Make chart type configurable via prefs.
-        // Pass empty string for description
-        LineDataSet barDataSet = new LineDataSet(barEntries, "");
-        int dataSetColor = context.getResources().getColor(colorId);
-        barDataSet.setColor(dataSetColor);
-        barDataSet.setCircleColor(dataSetColor);
-        barDataSet.setCircleColorHole(dataSetColor);
-        barDataSet.setLineWidth(5);
-        barDataSet.setCircleRadius(7);
-        barDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        barDataSet.setHighLightColor(dataSetColor);
+    @NonNull
+    private List<Entry> getYAxisValues(List<CounterRecord> records) {
+        int barEntryIndex = 0;
+        List<Entry> barEntries = Lists.newArrayList();
+        for (CounterRecord record : records) {
+            barEntries.add(new BarEntry(record.getCount(), barEntryIndex++, record.getDate()));
+        }
+        return barEntries;
+    }
 
-        LineData barData = new LineData(dates, barDataSet);
-
-        LineChart barChart = new LineChart(context);
-
-        barChart.getLegend().setEnabled(false);
-
+    private void setupYAxis(BarLineChartBase chart) {
         // Hide y-axis.
-        barChart.getAxisRight().setEnabled(false);
-        barChart.getAxisLeft().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
+        chart.getAxisLeft().setEnabled(false);
 
         // Pin min Y-val to 0.
-        barChart.getAxisLeft().setAxisMinValue(0);
-        barChart.setScaleYEnabled(false);
+        chart.getAxisLeft().setAxisMinValue(0);
+        chart.setScaleYEnabled(false);
+    }
 
-//        barChart.setBackgroundColor(context.getResources().getColor(R.color.beige));
-
-        // Hide the description in bottom-right of chart.
-        barChart.setDescription("");
-
-        // Set data and tell chart to draw.
-        barChart.setData(barData);
-        barChart.invalidate();
-
-        if (records.size() > 7) {
-            float numDesiredVisible = 7;
-            float percentDesiredVisible = (records.size() / numDesiredVisible);
-            barChart.zoomAndCenterAnimated(percentDesiredVisible,
+    private void setupChartZoom(List<CounterRecord> records, BarLineChartBase chart) {
+        if (records.size() > IDEAL_NUMBER_OF_VISIBLE_DATA_POINTS) {
+            float percentDesiredVisible = (records.size() / IDEAL_NUMBER_OF_VISIBLE_DATA_POINTS);
+            chart.zoomAndCenterAnimated(percentDesiredVisible,
                     1f,
                     records.size(),
-                    barChart.getY(),
+                    chart.getY(),
                     YAxis.AxisDependency.RIGHT,
                     1000);
         }
+    }
 
-        XAxis xAxis = barChart.getXAxis();
+    private void setupXAxis(Chart chart) {
+        XAxis xAxis = chart.getXAxis();
+
+        // Hide x-axis gridlines.
         xAxis.setDrawGridLines(false);
 
+        // Put the axis at bottom instead of top.
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // Setup the x-axis labels.
         xAxis.setTextSize(12f);
         xAxis.setTextColor(Color.BLACK);
         xAxis.setLabelRotationAngle(-90f);
         xAxis.setSpaceBetweenLabels(0);
-//        xAxis.setAvoidFirstLastClipping(true);
-        return barChart;
     }
 
     @Override
