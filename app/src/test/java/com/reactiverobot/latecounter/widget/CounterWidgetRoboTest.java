@@ -41,6 +41,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
         counterType = new CounterType();
         counterType.setDescription("desc");
         counterType.setWidgetId(1);
+        counterType.setColorId(android.R.color.black);
 
         counterRecord = new CounterRecord();
         counterRecord.setCount(10);

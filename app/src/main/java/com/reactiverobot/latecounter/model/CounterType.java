@@ -29,6 +29,8 @@ public class CounterType extends RealmObject {
     public static CounterType withDescription(String description) {
         CounterType counterType = new CounterType();
         counterType.setDescription(description);
+        counterType.setColorId(android.R.color.black);
+        counterType.setWidgetId(-1);
         return counterType;
     }
 
