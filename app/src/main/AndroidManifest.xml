@@ -36,6 +36,10 @@
             android:name=".activity.PickCounterColorActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
 
+        <activity
+            android:name=".activity.ReachedCounterLimitActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
+
         <receiver android:name=".widget.GenericCounterWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
