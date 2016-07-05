@@ -8,7 +8,6 @@ import android.util.Log;
 import com.google.inject.Inject;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 class BillingMachineImpl implements BillingMachine {
 
@@ -61,6 +60,28 @@ class BillingMachineImpl implements BillingMachine {
         iabHelper = null;
     }
 
+    @Override
+    public synchronized void launchPurchasePremiumFlow(Activity callingActivity,
+                                                       final PurchaseFlowCompletedHandler completedHandler) {
+        if (iabHelper == null) {
+            // TODO
+            return;
+        }
+        try {
+            iabHelper.launchPurchaseFlow(callingActivity, SKU_PREMIUM, PREMIUM_REQUEST,
+                    new IabHelper.OnIabPurchaseFinishedListener() {
+                        @Override
+                        public void onIabPurchaseFinished(IabResult result, Purchase info) {
+                            Log.d(TAG, "Purchase finished. result: " + result + " purchase: " + info);
+                            completedHandler.handleResult(result, info);
+                        }
+                    }, getDeveloperPayload());
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            e.printStackTrace();
+            // TODO
+        }
+    }
+
     private boolean verifyDeveloperPayload(Purchase premiumPurchase) {
         // TODO: Store payload on a server somewhere.
         return true;
@@ -72,27 +93,11 @@ class BillingMachineImpl implements BillingMachine {
         return "";
     }
 
-    @Override
-    public synchronized void launchPurchasePremiumFlow(final Activity callingActivity) {
-        try {
-            iabHelper.launchPurchaseFlow(callingActivity, SKU_PREMIUM, PREMIUM_REQUEST,
-                    new IabHelper.OnIabPurchaseFinishedListener() {
-                @Override
-                public void onIabPurchaseFinished(IabResult result, Purchase info) {
-                    Log.d(TAG, "Purchase finished. result: " + result + " purchase: " + info);
-                }
-            }, getDeveloperPayload());
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            e.printStackTrace();
-            // TODO
-        }
-    }
-
-    @Override
-    public synchronized boolean hasPurchasedPremium() {
+    // Unused, for informative purposes only.
+    private synchronized boolean hasPurchasedPremium() {
         if (iabHelper != null) {
             try {
-                iabStartLatch.await(5, TimeUnit.SECONDS);
+                iabStartLatch.await();
 
                 Purchase premiumPurchase = iabHelper.queryInventory().getPurchase(SKU_PREMIUM);
                 return premiumPurchase != null && verifyDeveloperPayload(premiumPurchase);

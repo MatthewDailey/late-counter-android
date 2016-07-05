@@ -7,7 +7,10 @@ public interface BillingMachine {
 
     void shutdown();
 
-    void launchPurchasePremiumFlow(Activity callingActivity);
+    void launchPurchasePremiumFlow(Activity callingActivity,
+                                   PurchaseFlowCompletedHandler completedHandler);
 
-    boolean hasPurchasedPremium();
+    public interface PurchaseFlowCompletedHandler {
+        void handleResult(IabResult result, Purchase info);
+    }
 }
