@@ -43,7 +43,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
                 RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.counter_widget);
 
-                int widgetColor = context.getResources().getColor(typeForWidget.get().getColorId());
+                int widgetColorId = typeForWidget.get().getColorId();
+                int widgetColor = context.getResources().getColor(widgetColorId);
 
                 views.setTextViewText(R.id.count_description, typeForWidget.get().getDescription());
                 views.setTextColor(R.id.count_description, widgetColor);
@@ -51,6 +52,11 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 views.setViewVisibility(R.id.count_text, View.VISIBLE);
                 views.setTextViewText(R.id.count_text, String.valueOf(todaysCount.getCount()));
                 views.setTextColor(R.id.count_text, widgetColor);
+
+                if (widgetColorId == R.color.red) {
+                    Log.v(TAG, "setting background resource to red");
+                    views.setInt(R.id.widget_view_group, "setBackgroundResource", R.drawable.widget_ripple_red);
+                }
 
                 Intent intent = new Intent(context, GenericCounterWidget.class);
                 intent.setAction(INCREMENT_COUNT_ACTION);

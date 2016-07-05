@@ -8,11 +8,12 @@
     android:layout_margin="1dp">
 
     <LinearLayout
+        android:id="@+id/widget_view_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="4dp"
-        android:background="@drawable/widget_background"
+        android:background="@drawable/widget_ripple_white"
         android:layout_centerInParent="true">
 
         <TextView
