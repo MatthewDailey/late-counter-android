@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="You&apos;ve reached the limit for the number of counters!"
+        android:text="You&apos;ve reached the limit for the number of counters."
         android:id="@+id/reached_limit_first_text_view"
         android:gravity="center_vertical|center_horizontal"
         android:layout_margin="16dp" />
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="To unlock more, please buy premium mode. (It costs less than a cup of coffee.)"
+        android:text="To unlock more counters, please buy premium mode. (It costs less than a cup of coffee.)"
         android:id="@+id/reached_limit_second_text_view"
         android:gravity="center_vertical|center_horizontal"
         android:layout_margin="16dp" />
@@ -29,9 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="16dp">
+        android:padding="16dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -39,7 +37,8 @@
             android:text="No thanks."
             android:background="?android:selectableItemBackground"
             android:id="@+id/reached_limit_cancel"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textColor="@color/accent_material_light" />
 
         <Button
             android:layout_width="wrap_content"
@@ -47,7 +46,8 @@
             android:text="Go Premium! :D"
             android:background="?android:selectableItemBackground"
             android:id="@+id/reached_limit_buy_button"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textColor="@color/accent_material_light" />
 
     </LinearLayout>
 
