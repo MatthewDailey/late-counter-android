@@ -62,7 +62,7 @@
                     </LinearLayout>
 
                     <CheckBox
-                        android:id="@+id/use_system_ringtone_checkbox"
+                        android:id="@+id/premium_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical" />
@@ -122,7 +122,7 @@
                     </LinearLayout>
 
                     <CheckBox
-                        android:id="@+id/show_notification_checkbox"
+                        android:id="@+id/bar_chart_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_vertical" />
