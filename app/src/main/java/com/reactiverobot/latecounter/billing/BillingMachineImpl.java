@@ -5,6 +5,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.inject.Inject;
 
 class BillingMachineImpl implements BillingMachine {
@@ -24,7 +27,6 @@ class BillingMachineImpl implements BillingMachine {
 
     private final Context context;
 
-
     @Inject
     public BillingMachineImpl(Context context) {
         this.context = context;
@@ -33,6 +35,15 @@ class BillingMachineImpl implements BillingMachine {
     @Override
     public synchronized void launchPurchasePremiumFlow(final Activity callingActivity,
                                                        final PurchaseFlowCompletedHandler completedHandler) {
+        runWithFirebaseRemoteConfig(new Runnable() {
+            @Override
+            public void run() {
+                launchPurchasePremiumFlowInternal(callingActivity, completedHandler);
+            }
+        });
+    }
+
+    private void launchPurchasePremiumFlowInternal(final Activity callingActivity, final PurchaseFlowCompletedHandler completedHandler) {
         final IabHelper iabHelper = new IabHelper(context, base64EncodedPublicKey);
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
@@ -61,8 +72,30 @@ class BillingMachineImpl implements BillingMachine {
         });
     }
 
+    private void runWithFirebaseRemoteConfig(final Runnable runnable) {
+        FirebaseRemoteConfig.getInstance()
+                .fetch(60)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                FirebaseRemoteConfig.getInstance().activateFetched();
+
+                runnable.run();
+            }
+        });
+    }
+
     @Override
     public void checkPurchasedPremium(final CheckPurchaseHandler handler) {
+        runWithFirebaseRemoteConfig(new Runnable() {
+            @Override
+            public void run() {
+                checkPurchasedPremiumInternal(handler);
+            }
+        });
+    }
+
+    private void checkPurchasedPremiumInternal(final CheckPurchaseHandler handler) {
         final IabHelper iabHelper = new IabHelper(context, base64EncodedPublicKey);
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
@@ -78,6 +111,7 @@ class BillingMachineImpl implements BillingMachine {
 
                     iabHelper.disposeWhenFinished();
                 } catch (IabException e) {
+                    // TODO
                     e.printStackTrace();
                 }
                 Log.d(TAG, "Setup successful.");
@@ -86,14 +120,12 @@ class BillingMachineImpl implements BillingMachine {
     }
 
     private boolean verifyDeveloperPayload(Purchase premiumPurchase) {
-        // TODO: Store payload on a server somewhere.
-        return true;
+        return premiumPurchase.getDeveloperPayload().equals(getDeveloperPayload());
     }
 
     @NonNull
     private String getDeveloperPayload() {
-        // TODO: Compute a random payload and store it somewhere.
-        return "";
+        return FirebaseRemoteConfig.getInstance().getString("developer_payload");
     }
 
 }
