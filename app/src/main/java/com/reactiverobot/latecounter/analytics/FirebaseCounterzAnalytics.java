@@ -3,7 +3,7 @@ package com.reactiverobot.latecounter.analytics;
 class FirebaseCounterzAnalytics implements CounterzAnalytics {
     @Override
     public void reportCounterCreated() {
-        
+
     }
 
     @Override
