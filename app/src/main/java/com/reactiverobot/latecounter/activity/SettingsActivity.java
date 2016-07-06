@@ -1,5 +1,6 @@
 package com.reactiverobot.latecounter.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -29,6 +30,16 @@ public class SettingsActivity extends RoboActionBarActivity  {
         setupShouldUseBarChartCheckBox();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (prefs.isPremiumEnabled()) {
+            premiumCheckbox.setChecked(true);
+            premiumCheckbox.setClickable(false);
+        }
+    }
+
     private void setupPremiumCheckbox() {
         if (prefs.isPremiumEnabled()) {
             premiumCheckbox.setChecked(true);
@@ -37,7 +48,8 @@ public class SettingsActivity extends RoboActionBarActivity  {
             premiumCheckbox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO Start activity to input password or buy.
+                    premiumCheckbox.setChecked(false);
+                    startActivity(new Intent(SettingsActivity.this, ReachedCounterLimitActivity.class));
                 }
             });
         }

@@ -157,7 +157,9 @@ public class PickCounterTypeActivity extends RoboActivity {
     }
 
     private void startReachedCounterLimitActivity() {
-        startActivity(new Intent(this, ReachedCounterLimitActivity.class));
+        Intent intent = new Intent(this, ReachedCounterLimitActivity.class);
+        intent.putExtra(ReachedCounterLimitActivity.REACHED_COUNTER_LIMIT_EXTRA, true);
+        startActivity(intent);
     }
 
     @Override

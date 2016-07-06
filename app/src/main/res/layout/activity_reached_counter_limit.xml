@@ -12,17 +12,27 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="You&apos;ve reached the limit for the number of counters."
         android:id="@+id/reached_limit_first_text_view"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center_vertical"
         android:layout_margin="16dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="To unlock more counters, please buy premium mode. (It costs less than a cup of coffee.)"
+        android:text="To unlock more counters, either buy premium mode (it costs less than a cup of coffee) or enter a promo code."
         android:id="@+id/reached_limit_second_text_view"
-        android:gravity="center_vertical|center_horizontal"
+        android:gravity="center_vertical"
         android:layout_margin="16dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/promo_edit_text"
+        android:hint="enter promo code"
+        android:textAlignment="center"
+        android:background="@android:color/transparent"
+        android:padding="16dp"
+        android:gravity="center_horizontal" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -43,7 +53,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go Premium! :D"
+            android:text="Buy Premium! :D"
             android:background="?android:selectableItemBackground"
             android:id="@+id/reached_limit_buy_button"
             android:layout_weight="1"
