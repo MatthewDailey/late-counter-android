@@ -59,6 +59,8 @@ class BillingMachineImpl implements BillingMachine {
                                     completedHandler.handleResult(result, info);
                                 }
                             }, getDeveloperPayload());
+
+                    iabHelper.disposeWhenFinished();
                 } catch (IabHelper.IabAsyncInProgressException e) {
                     e.printStackTrace();
                     // TODO
