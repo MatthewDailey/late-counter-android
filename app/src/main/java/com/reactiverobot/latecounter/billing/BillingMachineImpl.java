@@ -7,8 +7,6 @@ import android.util.Log;
 
 import com.google.inject.Inject;
 
-import java.util.concurrent.CountDownLatch;
-
 class BillingMachineImpl implements BillingMachine {
 
     static final int PREMIUM_REQUEST = 10001;
@@ -27,7 +25,6 @@ class BillingMachineImpl implements BillingMachine {
     private final Context context;
 
     private IabHelper iabHelper;
-    private CountDownLatch iabStartLatch = new CountDownLatch(0);
 
     @Inject
     public BillingMachineImpl(Context context) {

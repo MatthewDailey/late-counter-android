@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.billing.BillingMachine;
@@ -111,6 +112,9 @@ public class ReachedCounterLimitActivity extends RoboActivity {
     }
 
     private String getPromoCode() {
-        return "testCode";
+        FirebaseRemoteConfig.getInstance().fetch();
+        FirebaseRemoteConfig.getInstance().activateFetched();
+
+        return FirebaseRemoteConfig.getInstance().getString("free_premium_code");
     }
 }
