@@ -13,19 +13,19 @@ public interface CounterzAnalytics {
 
     void reportCounterDeleted();
 
-    void reportChangedWidgetColor();
+    void reportChangedCounterColor();
 
     void reportPickCounterColorActivity();
 
     void reportPickCounterTypeActivity();
 
     /*
-     * Sets has_opend_upgrade to true.
+     * Sets has_opened_upgrade to true.
      */
     void reportReachedCounterLimitActivity();
 
     /*
-     * Sets has_opend_upgrade to true.
+     * Sets has_opened_upgrade to true.
      */
     void reportWantedPremiumActivity();
 

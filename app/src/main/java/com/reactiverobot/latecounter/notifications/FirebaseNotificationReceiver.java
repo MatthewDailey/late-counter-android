@@ -47,7 +47,7 @@ public class FirebaseNotificationReceiver extends FirebaseMessagingService {
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        
+
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(android.R.drawable.ic_menu_add)
                 .setContentTitle(title)

@@ -175,7 +175,7 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PickCounterColorActivity.PICK_COLOR_REQUEST_CODE) {
             if (resultCode == RESULT_OK && counterTypeToUpdateColor.isPresent()) {
-                analytics.reportChangedWidgetColor();
+                analytics.reportChangedCounterColor();
 
                 int counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
                         counterTypeToUpdateColor.get().getColorId());
