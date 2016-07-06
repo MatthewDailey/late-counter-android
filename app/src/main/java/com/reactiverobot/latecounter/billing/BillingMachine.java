@@ -7,7 +7,13 @@ public interface BillingMachine {
     void launchPurchasePremiumFlow(Activity callingActivity,
                                    PurchaseFlowCompletedHandler completedHandler);
 
-    public interface PurchaseFlowCompletedHandler {
+    void checkPurchasedPremium(CheckPurchaseHandler checkPurchaseHandler);
+
+    interface PurchaseFlowCompletedHandler {
         void handleResult(IabResult result, Purchase info);
+    }
+
+    interface CheckPurchaseHandler {
+        void handleResult(boolean isPurchased);
     }
 }

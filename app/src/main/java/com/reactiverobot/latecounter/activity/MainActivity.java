@@ -18,10 +18,12 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.billing.BillingMachine;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
 import com.reactiverobot.latecounter.plot.PlotProvider;
+import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
 import java.util.List;
@@ -36,6 +38,8 @@ public class MainActivity extends RoboActionBarActivity {
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
     @Inject PlotProvider plotProvider;
+    @Inject BillingMachine billingMachine;
+    @Inject CounterzPrefs prefs;
 
     private ArrayAdapter<CounterType> counterTypeArrayAdapter;
 
@@ -44,6 +48,8 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        checkIfPremiumEnabled();
 
         final List<CounterType> counterTypeList = counterTypes.loadAllTypes();
 
@@ -60,6 +66,19 @@ public class MainActivity extends RoboActionBarActivity {
         };
 
         listView.setAdapter(counterTypeArrayAdapter);
+    }
+
+    private void checkIfPremiumEnabled() {
+        if (billingMachine != null && !prefs.isPremiumEnabled()) {
+            billingMachine.checkPurchasedPremium(new BillingMachine.CheckPurchaseHandler() {
+                @Override
+                public void handleResult(boolean isPurchased) {
+                    if (isPurchased) {
+                        prefs.enablePremium();
+                    }
+                }
+            });
+        }
     }
 
     @Override

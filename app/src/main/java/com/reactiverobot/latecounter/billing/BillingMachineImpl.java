@@ -24,7 +24,6 @@ class BillingMachineImpl implements BillingMachine {
 
     private final Context context;
 
-    private IabHelper iabHelper;
 
     @Inject
     public BillingMachineImpl(Context context) {
@@ -34,10 +33,14 @@ class BillingMachineImpl implements BillingMachine {
     @Override
     public synchronized void launchPurchasePremiumFlow(final Activity callingActivity,
                                                        final PurchaseFlowCompletedHandler completedHandler) {
-        iabHelper = new IabHelper(context, base64EncodedPublicKey);
+        final IabHelper iabHelper = new IabHelper(context, base64EncodedPublicKey);
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 Log.d(TAG, "Setup finished.");
+                if (!result.isSuccess()) {
+                    Log.d(TAG, "Setup failed. " + result.getMessage());
+                }
+
                 try {
                     iabHelper.launchPurchaseFlow(callingActivity, SKU_PREMIUM, PREMIUM_REQUEST,
                             new IabHelper.OnIabPurchaseFinishedListener() {
@@ -52,6 +55,30 @@ class BillingMachineImpl implements BillingMachine {
                 } catch (IabHelper.IabAsyncInProgressException e) {
                     e.printStackTrace();
                     // TODO
+                }
+                Log.d(TAG, "Setup successful.");
+            }
+        });
+    }
+
+    @Override
+    public void checkPurchasedPremium(final CheckPurchaseHandler handler) {
+        final IabHelper iabHelper = new IabHelper(context, base64EncodedPublicKey);
+        iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                Log.d(TAG, "Setup finished.");
+                if (!result.isSuccess()) {
+                    Log.d(TAG, "Setup failed. " + result.getMessage());
+                }
+
+                try {
+                    Purchase purchase = iabHelper.queryInventory().getPurchase(SKU_PREMIUM);
+
+                    handler.handleResult(purchase != null && verifyDeveloperPayload(purchase));
+
+                    iabHelper.disposeWhenFinished();
+                } catch (IabException e) {
+                    e.printStackTrace();
                 }
                 Log.d(TAG, "Setup successful.");
             }
