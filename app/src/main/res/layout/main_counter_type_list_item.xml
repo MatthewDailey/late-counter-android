@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             app:cb_color="@color/blue"
             app:cb_pressedRingWidth="8dip"
-            android:layout_marginRight="5dp"
+            android:layout_marginRight="20dp"
             android:padding="10dp" />
 
         <ImageButton

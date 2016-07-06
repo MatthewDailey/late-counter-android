@@ -3,7 +3,7 @@
     android:minWidth="40dp"
     android:minHeight="40dp"
     android:updatePeriodMillis="86400000"
-    android:previewImage="@android:drawable/presence_busy"
+    android:previewImage="@drawable/cropped_sample_counter"
     android:initialLayout="@layout/counter_widget"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen">
