@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.activity.PickCounterTypeActivity;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
@@ -31,6 +32,7 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
 
     @Inject CounterTypes counterTypes;
     @Inject CounterRecords counterRecords;
+    @Inject CounterzAnalytics analytics;
 
     public void onHandleUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int widgetIndex = 0; widgetIndex < appWidgetIds.length; widgetIndex++) {
@@ -90,6 +92,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
                 appWidgetManager.updateAppWidget(widgetId, views);
             }
         }
+
+        analytics.synchronizeUserProperties();
     }
 
     private int getWidgetRippleBackgroundId(int widgetColorId) {
@@ -114,6 +118,8 @@ public class GenericCounterWidget extends AdvancedRoboAppWidgetProvider {
         Log.d(TAG, "Received intent: " + intent.getAction());
 
         if (INCREMENT_COUNT_ACTION.equals(intent.getAction())) {
+            analytics.reportCounterClicked();
+
             int appWidgetId = intent.getIntExtra(WIDGET_ID_EXTRA, -1);
             if (appWidgetId >= 0) {
                 Optional<CounterType> typeForWidget = counterTypes.getTypeForWidget(appWidgetId);

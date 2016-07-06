@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
 import com.reactiverobot.latecounter.prefs.CounterzPrefs;
@@ -38,10 +39,13 @@ public class PickCounterTypeActivity extends RoboActivity {
 
     @Inject CounterTypes counterTypes;
     @Inject CounterzPrefs prefs;
+    @Inject CounterzAnalytics analytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics.reportPickCounterTypeActivity();
 
         final int appWidgetId = getIntent().getIntExtra(WIDGET_ID_EXTRA, -1);
         // TODO: add check handling start activity without widgetId.

@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.model.CounterTypes;
 
 import at.markushi.ui.CircleButton;
@@ -16,14 +17,16 @@ import roboguice.activity.RoboActivity;
 
 public class CreateCounterTypeActivity extends RoboActivity {
 
-    @Inject
-    CounterTypes counterTypes;
+    @Inject CounterTypes counterTypes;
+    @Inject CounterzAnalytics analytics;
 
     private int counterColorId = android.R.color.black;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics.reportCreateCounterActivity();
 
         final int appWidgetId = getIntent().getIntExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, -1);
         // TODO: add check handling start activity without widgetId.
@@ -42,6 +45,7 @@ public class CreateCounterTypeActivity extends RoboActivity {
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra(PickCounterTypeActivity.WIDGET_ID_EXTRA, appWidgetId);
 
+                    analytics.reportCounterCreated();
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } catch (CounterTypes.CounterTypesException e) {

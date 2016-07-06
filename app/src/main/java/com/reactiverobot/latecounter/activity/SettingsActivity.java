@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 
 import roboguice.activity.RoboActionBarActivity;
@@ -15,6 +16,7 @@ import roboguice.inject.InjectView;
 public class SettingsActivity extends RoboActionBarActivity  {
 
     @Inject CounterzPrefs prefs;
+    @Inject CounterzAnalytics analytics;
 
     @InjectView(R.id.premium_checkbox) CheckBox premiumCheckbox;
     @InjectView(R.id.bar_chart_checkbox) CheckBox barChartCheckbox;
@@ -22,6 +24,8 @@ public class SettingsActivity extends RoboActionBarActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics.reportSettingsActivity();
 
         setContentView(R.layout.activity_settings);
 
@@ -60,6 +64,7 @@ public class SettingsActivity extends RoboActionBarActivity  {
         barChartCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.reportToggledUseBarChart();
                 prefs.setShouldUseBarChart(!prefs.shouldUseBarChart());
             }
         });

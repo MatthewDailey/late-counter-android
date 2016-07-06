@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.billing.BillingMachine;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
@@ -44,6 +45,7 @@ public class MainActivity extends RoboActionBarActivity {
     @Inject PlotProvider plotProvider;
     @Inject BillingMachine billingMachine;
     @Inject CounterzPrefs prefs;
+    @Inject CounterzAnalytics analytics;
 
     private ArrayAdapter<CounterType> counterTypeArrayAdapter;
 
@@ -52,6 +54,9 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics.synchronizeUserProperties();
+        analytics.reportMainActivity();
 
         setContentView(R.layout.activity_main);
 
@@ -170,6 +175,8 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PickCounterColorActivity.PICK_COLOR_REQUEST_CODE) {
             if (resultCode == RESULT_OK && counterTypeToUpdateColor.isPresent()) {
+                analytics.reportChangedWidgetColor();
+
                 int counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
                         counterTypeToUpdateColor.get().getColorId());
 
@@ -188,6 +195,8 @@ public class MainActivity extends RoboActionBarActivity {
     }
 
     private void deleteCounterType(CounterType counterType) {
+        analytics.reportCounterDeleted();
+
         counterTypes.deleteWithDescription(counterType.getDescription());
         counterRecords.deleteType(counterType);
         broadcastUpdateWidget(counterType.getWidgetId());

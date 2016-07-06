@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterType;
 import com.reactiverobot.latecounter.model.CounterTypes;
@@ -29,6 +30,7 @@ public class GraphActivity extends RoboActionBarActivity {
 
     @Inject CounterTypes counterTypes;
     @Inject PlotProvider plotProvider;
+    @Inject CounterzAnalytics analytics;
 
     @NonNull // after onCreate succeeds.
     private CounterType counterType;
@@ -37,6 +39,8 @@ public class GraphActivity extends RoboActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        analytics.reportGraphActivity();
 
         String counterTypeToGraph = getIntent().getStringExtra(COUNTER_TYPE_TO_GRAPH_EXTRA);
         Optional<CounterType> counterTypeOption = counterTypes.getType(counterTypeToGraph);
@@ -81,6 +85,7 @@ public class GraphActivity extends RoboActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.toggle_sample_data) {
+            analytics.reportToggledSampleData();
             synchronized (this) {
                 if (showingRealData) {
                     setTitle(counterType.getDescription() + " - Sample Data");

@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
+import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
 import com.reactiverobot.latecounter.billing.BillingMachine;
 import com.reactiverobot.latecounter.billing.IabHelper;
 import com.reactiverobot.latecounter.billing.IabResult;
@@ -30,6 +31,8 @@ public class ReachedCounterLimitActivity extends RoboActivity {
 
     @Inject BillingMachine billingMachine;
     @Inject CounterzPrefs prefs;
+    @Inject CounterzAnalytics analytics;
+
 
     @InjectView(R.id.promo_edit_text) EditText promoEditText;
 
@@ -42,11 +45,16 @@ public class ReachedCounterLimitActivity extends RoboActivity {
         findViewById(R.id.reached_limit_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.reportClickedCancelBuyingPremium();
+
                 finish();
             }
         });
 
-        if (!getIntent().getBooleanExtra(REACHED_COUNTER_LIMIT_EXTRA, false)) {
+        if (getIntent().getBooleanExtra(REACHED_COUNTER_LIMIT_EXTRA, false)) {
+            analytics.reportReachedCounterLimitActivity();
+        } else {
+            analytics.reportWantedPremiumActivity();
             findViewById(R.id.reached_limit_first_text_view).setVisibility(View.GONE);
         }
 
@@ -55,12 +63,17 @@ public class ReachedCounterLimitActivity extends RoboActivity {
         findViewById(R.id.reached_limit_buy_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.reportClickedBuyPremium();
+
                 billingMachine.launchPurchasePremiumFlow(ReachedCounterLimitActivity.this,
                         new BillingMachine.PurchaseFlowCompletedHandler() {
                             @Override
                             public void handleResult(IabResult result, Purchase info) {
-                                if (result.isSuccess()
-                                        || result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED) {
+                                if (result.isSuccess()) {
+                                    analytics.reportPurchasedPremium();
+                                    enablePremiumMode();
+                                } else if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED) {
+                                    analytics.reportPreviouslyPurchasedPremium();
                                     enablePremiumMode();
                                 } else {
                                     Log.e("ReachedLimit", "Failure to purchase: " + result);
@@ -93,9 +106,11 @@ public class ReachedCounterLimitActivity extends RoboActivity {
                             @Override
                             public void onTextChanged(CharSequence promoAttempt, int start, int before, int count) {
                                 if (promoCode.equals(promoAttempt.toString())) {
+                                    analytics.reportCorrectPremiumPassword();
                                     promoEditText.setTextColor(getResources().getColor(R.color.green));
                                     enablePremiumMode();
                                 } else {
+                                    analytics.reportAttemptedPremiumPassword();
                                     promoEditText.setTextColor(getResources().getColor(R.color.red));
                                 }
                             }
@@ -109,6 +124,8 @@ public class ReachedCounterLimitActivity extends RoboActivity {
     }
 
     private void enablePremiumMode() {
+        analytics.reportEnabledPremium();
+
         Toast enablePremiumToast = Toast.makeText(getApplicationContext(),
                 "Premium mode enabled.",
                 Toast.LENGTH_LONG);
