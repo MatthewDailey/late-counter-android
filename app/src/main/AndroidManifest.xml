@@ -26,6 +26,9 @@
 
         <activity android:name=".activity.GraphActivity" />
 
+        <activity android:name=".activity.SettingsActivity"
+            android:label="Counterz - Settings"/>
+
         <activity
             android:name=".activity.PickCounterTypeActivity"
             android:theme="@android:style/Theme.Holo.Light.Dialog.NoActionBar" />
