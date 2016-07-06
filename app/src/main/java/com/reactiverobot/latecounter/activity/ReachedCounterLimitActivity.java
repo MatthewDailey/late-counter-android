@@ -1,13 +1,17 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
@@ -29,8 +33,6 @@ public class ReachedCounterLimitActivity extends RoboActivity {
 
     @InjectView(R.id.promo_edit_text) EditText promoEditText;
 
-    private String promoCode;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,29 +50,7 @@ public class ReachedCounterLimitActivity extends RoboActivity {
             findViewById(R.id.reached_limit_first_text_view).setVisibility(View.GONE);
         }
 
-        promoCode = getPromoCode();
-
-        promoEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence promoAttempt, int start, int before, int count) {
-                if (promoCode.equals(promoAttempt.toString())) {
-                    promoEditText.setTextColor(getResources().getColor(R.color.green));
-                    enablePremiumMode();
-                } else {
-                    promoEditText.setTextColor(getResources().getColor(R.color.red));
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        setupPromoCode();
 
         findViewById(R.id.reached_limit_buy_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,20 +75,48 @@ public class ReachedCounterLimitActivity extends RoboActivity {
         });
     }
 
+    private void setupPromoCode() {
+        FirebaseRemoteConfig.getInstance()
+                .fetch()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        FirebaseRemoteConfig.getInstance().activateFetched();
+
+                        final String promoCode = FirebaseRemoteConfig.getInstance()
+                                .getString("free_premium_code");
+
+                        promoEditText.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                            @Override
+                            public void onTextChanged(CharSequence promoAttempt, int start, int before, int count) {
+                                if (promoCode.equals(promoAttempt.toString())) {
+                                    promoEditText.setTextColor(getResources().getColor(R.color.green));
+                                    enablePremiumMode();
+                                } else {
+                                    promoEditText.setTextColor(getResources().getColor(R.color.red));
+                                }
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable s) {}
+                        });
+                    }
+                });
+
+    }
+
     private void enablePremiumMode() {
-        Toast.makeText(getApplicationContext(),
+        Toast enablePremiumToast = Toast.makeText(getApplicationContext(),
                 "Premium mode enabled.",
-                Toast.LENGTH_LONG)
-                .show();
+                Toast.LENGTH_LONG);
+        enablePremiumToast.setGravity(Gravity.CENTER, 0, 0);
+        enablePremiumToast.show();
 
         prefs.enablePremium();
         finish();
     }
 
-    private String getPromoCode() {
-        FirebaseRemoteConfig.getInstance().fetch();
-        FirebaseRemoteConfig.getInstance().activateFetched();
-
-        return FirebaseRemoteConfig.getInstance().getString("free_premium_code");
-    }
 }
