@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +66,14 @@ public class MainActivity extends RoboActionBarActivity {
             }
         };
 
+        counterTypeArrayAdapter.registerDataSetObserver(new DataSetObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                showEmptyLayoutIfNecessary();
+            }
+        });
+
         listView.setAdapter(counterTypeArrayAdapter);
     }
 
@@ -84,7 +93,16 @@ public class MainActivity extends RoboActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+
         counterTypeArrayAdapter.notifyDataSetChanged();
+    }
+
+    private void showEmptyLayoutIfNecessary() {
+        if (counterTypeArrayAdapter.isEmpty()) {
+            findViewById(R.id.empty_layout).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.empty_layout).setVisibility(View.GONE);
+        }
     }
 
     private View getViewForCounterType(final CounterType counterType) {

@@ -12,4 +12,38 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true" />
+
+    <LinearLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Counterz!\n\nCounterz allows you to keep track of a daily count of anything using widgets on your homescreen. Great examples are 'Glasses of Water' or 'Hours of TV'."/>
+
+        <TextView
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You have no counters yet.\n\nTo add a new counter, add a Counterz widget to your homescreen and click on it.\n\nOnce you have counters, this view will show the history of each counter over time."/>
+
+        <TextView
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:text="What gets measured gets managed."/>
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="- Peter Drucker"/>
+    </LinearLayout>
+
 </RelativeLayout>
