@@ -181,6 +181,38 @@ class CounterTypesRealmImpl implements CounterTypes {
         });
     }
 
+    @Override
+    public CounterType updateColorForType(final String description, final int counterColorId) {
+        return realmSupplier.callWithRealm(new RealmSupplier.RealmCallable<CounterType>() {
+            @Override
+            public CounterType call(Realm realm) {
+                realm.beginTransaction();
+                CounterType counterType = realm.createObject(CounterType.class);
+                try {
+                    counterType.setDescription(description);
+                    counterType.setWidgetId(-1);
+                    counterType.setColorId(counterColorId);
+
+                    realm.commitTransaction();
+
+                    return realm.copyFromRealm(counterType);
+                } catch (RealmPrimaryKeyConstraintException e) {
+                    counterType.deleteFromRealm();
+                    CounterType preExistingType = realm.where(CounterType.class)
+                            .equalTo("description", description)
+                            .findAll()
+                            .first();
+                    preExistingType.setColorId(counterColorId);
+                    realm.commitTransaction();
+
+                    return realm.copyFromRealm(preExistingType);
+                } catch (Throwable e) {
+                    throw Throwables.propagate(e);
+                }
+            }
+        });
+    }
+
     @NonNull
     private RealmQuery<CounterType> loadTypesWithWidgetId(Realm realm, int widgetId) {
         return realm.where(CounterType.class).equalTo("widgetId", widgetId);

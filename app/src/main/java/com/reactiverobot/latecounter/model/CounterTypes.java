@@ -80,6 +80,16 @@ public interface CounterTypes {
      */
     void deleteWithDescription(String description);
 
+    /**
+     * Updates the color associated with the given type. Will create a type with no widget if no
+     * such type exists.
+     *
+     * @param description Description of the type to be created.
+     * @param counterColorId New color id.
+     * @return CounterType which was just updated or created.
+     */
+    CounterType updateColorForType(String description, int counterColorId);
+
     class CounterTypesException extends Exception {
         public CounterTypesException(String message) {
             super(message);

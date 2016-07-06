@@ -27,8 +27,11 @@ import com.reactiverobot.latecounter.plot.PlotProvider;
 import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 import com.reactiverobot.latecounter.widget.GenericCounterWidget;
 
+import org.roboguice.shaded.goole.common.base.Optional;
+
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
 import roboguice.activity.RoboActionBarActivity;
 
 
@@ -43,6 +46,8 @@ public class MainActivity extends RoboActionBarActivity {
     @Inject CounterzPrefs prefs;
 
     private ArrayAdapter<CounterType> counterTypeArrayAdapter;
+
+    private Optional<CounterType> counterTypeToUpdateColor = Optional.absent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,12 +146,45 @@ public class MainActivity extends RoboActionBarActivity {
             }
         });
 
+        CircleButton changeColorButton = (CircleButton) counterTypeView.findViewById(R.id.change_color_button);
+        changeColorButton.setColor(getResources().getColor(counterType.getColorId()));
+        changeColorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                counterTypeToUpdateColor = Optional.of(counterType);
+                startActivityForResult(
+                        new Intent(MainActivity.this, PickCounterColorActivity.class),
+                        PickCounterColorActivity.PICK_COLOR_REQUEST_CODE);
+            }
+        });
+
         View plot = plotProvider.getPlot(counterType);
         plot.setMinimumHeight(500);
         counterTypeView.addView(plot);
 
         counterTypeView.setPadding(10, 10, 10, 60);
         return counterTypeView;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PickCounterColorActivity.PICK_COLOR_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && counterTypeToUpdateColor.isPresent()) {
+                int counterColorId = data.getIntExtra(PickCounterColorActivity.COLOR_ID_EXTRA,
+                        counterTypeToUpdateColor.get().getColorId());
+
+                int counterTypeListPosition =
+                        counterTypeArrayAdapter.getPosition(counterTypeToUpdateColor.get());
+                counterTypeArrayAdapter.getItem(counterTypeListPosition).setColorId(counterColorId);
+
+                counterTypeArrayAdapter.notifyDataSetChanged();
+
+                counterTypes.updateColorForType(counterTypeToUpdateColor.get().getDescription(), counterColorId);
+
+                broadcastUpdateWidget(counterTypeToUpdateColor.get().getWidgetId());
+            }
+            counterTypeToUpdateColor = Optional.absent();
+        }
     }
 
     private void deleteCounterType(CounterType counterType) {
