@@ -62,6 +62,12 @@ public class MainActivity extends RoboActionBarActivity {
         listView.setAdapter(counterTypeArrayAdapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        counterTypeArrayAdapter.notifyDataSetChanged();
+    }
+
     private View getViewForCounterType(final CounterType counterType) {
         ViewGroup counterTypeView = (LinearLayout) LayoutInflater.from(this)
                 .inflate(R.layout.main_counter_type_list_item, null);

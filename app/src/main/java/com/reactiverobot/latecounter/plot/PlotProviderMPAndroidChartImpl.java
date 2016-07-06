@@ -6,11 +6,14 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -19,6 +22,7 @@ import com.google.inject.Inject;
 import com.reactiverobot.latecounter.model.CounterRecord;
 import com.reactiverobot.latecounter.model.CounterRecords;
 import com.reactiverobot.latecounter.model.CounterType;
+import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 
 import org.roboguice.shaded.goole.common.base.Function;
 import org.roboguice.shaded.goole.common.collect.Iterables;
@@ -32,11 +36,13 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
     public static final int IDEAL_NUMBER_OF_VISIBLE_DATA_POINTS = 7;
     private final Context context;
     private final CounterRecords counterRecords;
+    private final CounterzPrefs prefs;
 
     @Inject
-    PlotProviderMPAndroidChartImpl(Context context, CounterRecords counterRecords) {
+    PlotProviderMPAndroidChartImpl(Context context, CounterRecords counterRecords, CounterzPrefs prefs) {
         this.context = context;
         this.counterRecords = counterRecords;
+        this.prefs = prefs;
     }
 
     @Override
@@ -45,7 +51,12 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
         // TODO: Make chart type configurable via prefs.
         // Pass empty string for description
-        BarLineChartBase chart = getLineChart(records, dataSetColor);
+        BarLineChartBase chart;
+        if (prefs.shouldUseBarChart()) {
+             chart = getBarChart(records, dataSetColor);
+        } else {
+             chart = getLineChart(records, dataSetColor);
+        }
 
         chart.getLegend().setEnabled(false);
         chart.setDescription("");
@@ -60,7 +71,14 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
     @NonNull
     private BarLineChartBase getLineChart(List<CounterRecord> records, int dataSetColor) {
-        LineDataSet dataSet = new LineDataSet(getYAxisValues(records), "");
+        Iterable<Entry> extries = Iterables.transform(getYAxisValues(records),
+                new Function<BarEntry, Entry>() {
+                    @Override
+                    public Entry apply(BarEntry barEntry) {
+                        return barEntry;
+                    }
+                });
+        LineDataSet dataSet = new LineDataSet(Lists.newArrayList(extries), "");
         dataSet.setColor(dataSetColor);
         dataSet.setCircleColor(dataSetColor);
         dataSet.setCircleColorHole(dataSetColor);
@@ -71,6 +89,17 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
 
         BarLineChartBase chart = new LineChart(context);
         chart.setData(new LineData(getXAxisValues(records), dataSet));
+        return chart;
+    }
+
+    @NonNull
+    private BarLineChartBase getBarChart(List<CounterRecord> records, int dataSetColor) {
+        BarDataSet dataSet = new BarDataSet(getYAxisValues(records), "");
+        dataSet.setColor(dataSetColor);
+        dataSet.setHighLightColor(dataSetColor);
+
+        BarChart chart = new BarChart(context);
+        chart.setData(new BarData(getXAxisValues(records), dataSet));
         return chart;
     }
 
@@ -87,9 +116,9 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
     }
 
     @NonNull
-    private List<Entry> getYAxisValues(List<CounterRecord> records) {
+    private List<BarEntry> getYAxisValues(List<CounterRecord> records) {
         int barEntryIndex = 0;
-        List<Entry> barEntries = Lists.newArrayList();
+        List<BarEntry> barEntries = Lists.newArrayList();
         for (CounterRecord record : records) {
             barEntries.add(new BarEntry(record.getCount(), barEntryIndex++, record.getDate()));
         }
