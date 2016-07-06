@@ -32,18 +32,6 @@ class BillingMachineImpl implements BillingMachine {
     }
 
     @Override
-    public synchronized void shutdown() {
-        if (iabHelper != null) {
-            try {
-                iabHelper.dispose();
-            } catch (IabHelper.IabAsyncInProgressException e) {
-                e.printStackTrace();
-                // TODO
-            }
-        }
-    }
-
-    @Override
     public synchronized void launchPurchasePremiumFlow(final Activity callingActivity,
                                                        final PurchaseFlowCompletedHandler completedHandler) {
         iabHelper = new IabHelper(context, base64EncodedPublicKey);

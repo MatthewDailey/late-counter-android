@@ -4,8 +4,6 @@ import android.app.Activity;
 
 public interface BillingMachine {
 
-    void shutdown();
-
     void launchPurchasePremiumFlow(Activity callingActivity,
                                    PurchaseFlowCompletedHandler completedHandler);
 

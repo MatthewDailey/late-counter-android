@@ -105,12 +105,6 @@ public class ReachedCounterLimitActivity extends RoboActivity {
         finish();
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        billingMachine.shutdown();
-    }
-
     private String getPromoCode() {
         FirebaseRemoteConfig.getInstance().fetch();
         FirebaseRemoteConfig.getInstance().activateFetched();
