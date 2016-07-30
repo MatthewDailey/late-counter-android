@@ -49,14 +49,8 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
     public View getPlot(List<CounterRecord> records, int colorId) {
         int dataSetColor = context.getResources().getColor(colorId);
 
-        // TODO: Make chart type configurable via prefs.
         // Pass empty string for description
-        BarLineChartBase chart;
-        if (prefs.shouldUseBarChart()) {
-             chart = getBarChart(records, dataSetColor);
-        } else {
-             chart = getLineChart(records, dataSetColor);
-        }
+        BarLineChartBase chart = getBarLineChartBase(records, dataSetColor);
 
         chart.getLegend().setEnabled(false);
         chart.setDescription("");
@@ -67,6 +61,15 @@ class PlotProviderMPAndroidChartImpl implements PlotProvider {
         setupXAxis(chart);
 
         return chart;
+    }
+
+    @NonNull
+    private BarLineChartBase getBarLineChartBase(List<CounterRecord> records, int dataSetColor) {
+        if (prefs.shouldUseBarChart()) {
+             return getBarChart(records, dataSetColor);
+        } else {
+             return getLineChart(records, dataSetColor);
+        }
     }
 
     @NonNull
