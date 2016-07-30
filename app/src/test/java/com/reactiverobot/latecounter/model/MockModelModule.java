@@ -1,6 +1,7 @@
 package com.reactiverobot.latecounter.model;
 
 import com.google.inject.AbstractModule;
+import com.reactiverobot.latecounter.billing.BillingMachine;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -10,12 +11,14 @@ import static org.mockito.Mockito.mock;
 
 public class MockModelModule extends AbstractModule implements TestRule {
 
-    public CounterTypes counterTypes;
+    public CounterTypes mockCounterTypes;
     public CounterRecords mockCounterRecords;
+    public BillingMachine mockBillingMachine;
 
     @Override
     protected void configure() {
-        bind(CounterTypes.class).toInstance(counterTypes);
+        bind(BillingMachine.class).toInstance(mockBillingMachine);
+        bind(CounterTypes.class).toInstance(mockCounterTypes);
         bind(CounterRecords.class).toInstance(mockCounterRecords);
     }
 
@@ -24,8 +27,9 @@ public class MockModelModule extends AbstractModule implements TestRule {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                counterTypes = mock(CounterTypes.class);
+                mockCounterTypes = mock(CounterTypes.class);
                 mockCounterRecords = mock(CounterRecords.class);
+                mockBillingMachine = mock(BillingMachine.class);
 
                 base.evaluate();
             }

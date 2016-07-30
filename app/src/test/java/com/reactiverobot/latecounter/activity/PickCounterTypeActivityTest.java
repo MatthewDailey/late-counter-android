@@ -44,7 +44,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Override
     protected void setup() {
-        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.<CounterType>absent());
 
         shadowAppWidgetManager = shadowOf(AppWidgetManager.getInstance(context));
@@ -96,7 +96,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testShowsCounterType() {
-        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+        when(mockModelModule.mockCounterTypes.loadTypesWithNoWidget())
                 .thenReturn(Lists.newArrayList(CounterType.withDescription("type")));
 
         setupActivity();
@@ -114,9 +114,9 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
     @Test
     public void testSetWidgetIdForTypeWhenClicked() {
         CounterType type = CounterType.withDescription("type");
-        when(mockModelModule.counterTypes.loadTypesWithNoWidget())
+        when(mockModelModule.mockCounterTypes.loadTypesWithNoWidget())
                 .thenReturn(Lists.newArrayList(type));
-        when(mockModelModule.counterTypes.getTypeForWidget(widgetId))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(widgetId))
                 .thenReturn(Optional.of(type));
         when(mockModelModule.mockCounterRecords.getTodaysCount(type))
                 .thenReturn(CounterRecord.create(new Date(), 1, type));
@@ -127,7 +127,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
         typeList.getAdapter().getView(1, null, null).performClick();
 
-        verify(mockModelModule.counterTypes).updateWidgetForType("type", widgetId);
+        verify(mockModelModule.mockCounterTypes).updateWidgetForType("type", widgetId);
 
         View widgetView = shadowAppWidgetManager.getViewFor(widgetId);
         TextView countView = (TextView) widgetView.findViewById(R.id.count_text);
@@ -154,7 +154,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testClickingOnFooterLaunchesCreateCounterWhenPremium() {
-        when(mockModelModule.counterTypes.loadAllTypes())
+        when(mockModelModule.mockCounterTypes.loadAllTypes())
                 .thenReturn(Lists.newArrayList(
                         CounterType.withDescription("type1"),
                         CounterType.withDescription("type2"),
@@ -178,7 +178,7 @@ public class PickCounterTypeActivityTest extends AbstractRoboTest {
 
     @Test
     public void testClickingOnFooterLaunchesReachedLimitWithoutPremium() {
-        when(mockModelModule.counterTypes.loadAllTypes())
+        when(mockModelModule.mockCounterTypes.loadAllTypes())
                 .thenReturn(Lists.newArrayList(
                         CounterType.withDescription("type1"),
                         CounterType.withDescription("type2"),

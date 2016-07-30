@@ -46,7 +46,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
         counterRecord = new CounterRecord();
         counterRecord.setCount(10);
 
-        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.<CounterType>absent());
     }
 
@@ -70,7 +70,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
     public void testLaunchDialogWhenNoTypeSet() {
         createWidget();
 
-        verify(mockModelModule.counterTypes).getTypeForWidget(widgetId);
+        verify(mockModelModule.mockCounterTypes).getTypeForWidget(widgetId);
 
         assertThat(shadowOf(context).getNextStartedActivity(), is(equalTo(null)));
 
@@ -85,7 +85,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Test
     public void testSetViewFromTodaysCount() {
-        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.of(counterType));
         when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
                 .thenReturn(counterRecord);
@@ -103,7 +103,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Test
     public void testIncrementCountBroadcastWhenCounterClicked() {
-        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.of(counterType));
         when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
                 .thenReturn(counterRecord);
@@ -120,7 +120,7 @@ public class CounterWidgetRoboTest extends AbstractRoboTest {
 
     @Test
     public void testIncrementCountWhenIncrementBroadcastReceived() {
-        when(mockModelModule.counterTypes.getTypeForWidget(anyInt()))
+        when(mockModelModule.mockCounterTypes.getTypeForWidget(anyInt()))
                 .thenReturn(Optional.of(counterType));
         when(mockModelModule.mockCounterRecords.getTodaysCount(counterType))
                 .thenReturn(counterRecord);
