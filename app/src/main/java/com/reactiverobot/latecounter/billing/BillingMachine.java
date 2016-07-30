@@ -9,11 +9,17 @@ public interface BillingMachine {
 
     void checkPurchasedPremium(CheckPurchaseHandler checkPurchaseHandler);
 
+    void getPremiumCodeText(PremiumCodeHandler premiumCodeHandler);
+
     interface PurchaseFlowCompletedHandler {
         void handleResult(IabResult result, Purchase info);
     }
 
     interface CheckPurchaseHandler {
         void handleResult(boolean isPurchased);
+    }
+
+    interface PremiumCodeHandler {
+        void handlePremiumCode(String premiumCode);
     }
 }

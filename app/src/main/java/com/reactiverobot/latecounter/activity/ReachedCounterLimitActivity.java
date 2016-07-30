@@ -1,7 +1,6 @@
 package com.reactiverobot.latecounter.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -10,9 +9,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
@@ -58,7 +54,30 @@ public class ReachedCounterLimitActivity extends RoboActivity {
             findViewById(R.id.reached_limit_first_text_view).setVisibility(View.GONE);
         }
 
-        setupPromoCode();
+        billingMachine.getPremiumCodeText(new BillingMachine.PremiumCodeHandler() {
+            @Override
+            public void handlePremiumCode(final String premiumCode) {
+                promoEditText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence promoAttempt, int start, int before, int count) {
+                        if (premiumCode.equals(promoAttempt.toString())) {
+                            analytics.reportCorrectPremiumPassword();
+                            promoEditText.setTextColor(getResources().getColor(R.color.green));
+                            enablePremiumMode();
+                        } else {
+                            analytics.reportAttemptedPremiumPassword();
+                            promoEditText.setTextColor(getResources().getColor(R.color.red));
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
+            }
+        });
 
         findViewById(R.id.reached_limit_buy_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,41 +105,6 @@ public class ReachedCounterLimitActivity extends RoboActivity {
                         });
             }
         });
-    }
-
-    private void setupPromoCode() {
-        FirebaseRemoteConfig.getInstance()
-                .fetch()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        FirebaseRemoteConfig.getInstance().activateFetched();
-
-                        final String promoCode = FirebaseRemoteConfig.getInstance()
-                                .getString("free_premium_code");
-
-                        promoEditText.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-                            @Override
-                            public void onTextChanged(CharSequence promoAttempt, int start, int before, int count) {
-                                if (promoCode.equals(promoAttempt.toString())) {
-                                    analytics.reportCorrectPremiumPassword();
-                                    promoEditText.setTextColor(getResources().getColor(R.color.green));
-                                    enablePremiumMode();
-                                } else {
-                                    analytics.reportAttemptedPremiumPassword();
-                                    promoEditText.setTextColor(getResources().getColor(R.color.red));
-                                }
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable s) {}
-                        });
-                    }
-                });
-
     }
 
     private void enablePremiumMode() {

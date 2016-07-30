@@ -95,6 +95,24 @@ class BillingMachineImpl implements BillingMachine {
         });
     }
 
+    @Override
+    public void getPremiumCodeText(final PremiumCodeHandler premiumCodeHandler) {
+        FirebaseRemoteConfig.getInstance()
+                .fetch()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        FirebaseRemoteConfig.getInstance().activateFetched();
+
+                        final String premiumCode = FirebaseRemoteConfig.getInstance()
+                                .getString("free_premium_code");
+
+                        premiumCodeHandler.handlePremiumCode(premiumCode);
+                    }
+                });
+    }
+
+
     private void checkPurchasedPremiumInternal(final CheckPurchaseHandler handler) {
         final IabHelper iabHelper = new IabHelper(context, base64EncodedPublicKey);
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
