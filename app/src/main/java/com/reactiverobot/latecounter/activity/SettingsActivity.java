@@ -1,7 +1,11 @@
 package com.reactiverobot.latecounter.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -9,6 +13,7 @@ import android.widget.CheckBox;
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
 import com.reactiverobot.latecounter.analytics.CounterzAnalytics;
+import com.reactiverobot.latecounter.notifications.ReminderReceiver;
 import com.reactiverobot.latecounter.prefs.CounterzPrefs;
 
 import roboguice.activity.RoboActionBarActivity;
@@ -73,30 +78,43 @@ public class SettingsActivity extends RoboActionBarActivity  {
     }
 
     private void setupNotificationsCheckBox() {
-        notificationsCheckbox.setChecked(prefs.shouldUseBarChart());
+        notificationsCheckbox.setChecked(prefs.isNotificationEnabled());
         notificationsCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isNotificationsEnabled = !prefs.isNotificationEnabled();
+                boolean newIsNotificationsEnabled = !prefs.isNotificationEnabled();
 
-                if (isNotificationsEnabled) {
+                if (newIsNotificationsEnabled) {
                     startReminderNotifications();
                 } else {
                     cancelReminderNotifications();
                 }
 
-                prefs.setNotificationEnabled(isNotificationsEnabled);
+                prefs.setNotificationEnabled(newIsNotificationsEnabled);
             }
         });
     }
 
+    private PendingIntent getAlarmIntent() {
+        Intent reminderIntent = new Intent(this, ReminderReceiver.class);
+        return PendingIntent.getBroadcast(this, 0, reminderIntent, 0);
+    }
+
     private void startReminderNotifications() {
-        // TODO
         Log.d("SettingsActivity", "start reminders");
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setInexactRepeating(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            SystemClock.elapsedRealtime() + 3000,
+            3000,
+            getAlarmIntent());
     }
 
     private void cancelReminderNotifications() {
-        // TODO
         Log.d("SettingsActivity", "cancel reminders");
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(getAlarmIntent());
     }
 }
