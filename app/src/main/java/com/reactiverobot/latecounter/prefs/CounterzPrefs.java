@@ -11,4 +11,6 @@ public interface CounterzPrefs {
 
     boolean isNotificationEnabled();
     void setNotificationEnabled(boolean isNotificationEnabled);
+
+    int getHoursBetweenNotifications();
 }

@@ -6,9 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 import com.reactiverobot.latecounter.R;
@@ -101,18 +101,31 @@ public class SettingsActivity extends RoboActionBarActivity  {
     }
 
     private void startReminderNotifications() {
-        Log.d("SettingsActivity", "start reminders");
+        int hoursBetweenNotifications = prefs.getHoursBetweenNotifications();
+
+        Toast
+            .makeText(
+                getApplicationContext(),
+                "Counterz will send you a reminder notification every " + hoursBetweenNotifications
+                    + " hours starting now.",
+                Toast.LENGTH_LONG)
+            .show();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.setInexactRepeating(
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            SystemClock.elapsedRealtime() + 3000,
-            3000,
+            SystemClock.elapsedRealtime(),
+            AlarmManager.INTERVAL_HOUR * hoursBetweenNotifications,
             getAlarmIntent());
     }
 
     private void cancelReminderNotifications() {
-        Log.d("SettingsActivity", "cancel reminders");
+        Toast
+            .makeText(
+                    getApplicationContext(),
+                    "Reminders disabled.",
+                    Toast.LENGTH_LONG)
+            .show();
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(getAlarmIntent());

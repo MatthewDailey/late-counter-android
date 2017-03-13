@@ -55,4 +55,9 @@ class CounterzPrefsImpl implements CounterzPrefs {
     public void setNotificationEnabled(boolean isNotificationEnabled) {
         getPrefs().edit().putBoolean(IS_NOTIFICATION_ENABLED_PREF, isNotificationEnabled).commit();
     }
+
+    @Override
+    public int getHoursBetweenNotifications() {
+        return 6;
+    }
 }
