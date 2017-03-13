@@ -30,7 +30,7 @@ public class SettingsActivity extends RoboActionBarActivity  {
         setContentView(R.layout.activity_settings);
 
         setupPremiumCheckbox();
-
+        setupNotificationsCheckBox();
         setupShouldUseBarChartCheckBox();
     }
 
@@ -70,4 +70,13 @@ public class SettingsActivity extends RoboActionBarActivity  {
         });
     }
 
+    private void setupNotificationsCheckBox() {
+        barChartCheckbox.setChecked(prefs.shouldUseBarChart());
+        barChartCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                prefs.setNotificationEnabled(!prefs.isNotificationEnabled());
+            }
+        });
+    }
 }
