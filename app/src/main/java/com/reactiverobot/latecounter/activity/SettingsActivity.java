@@ -2,6 +2,7 @@ package com.reactiverobot.latecounter.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -20,6 +21,7 @@ public class SettingsActivity extends RoboActionBarActivity  {
 
     @InjectView(R.id.premium_checkbox) CheckBox premiumCheckbox;
     @InjectView(R.id.bar_chart_checkbox) CheckBox barChartCheckbox;
+    @InjectView(R.id.notification_checkbox) CheckBox notificationsCheckbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +73,30 @@ public class SettingsActivity extends RoboActionBarActivity  {
     }
 
     private void setupNotificationsCheckBox() {
-        barChartCheckbox.setChecked(prefs.shouldUseBarChart());
-        barChartCheckbox.setOnClickListener(new View.OnClickListener() {
+        notificationsCheckbox.setChecked(prefs.shouldUseBarChart());
+        notificationsCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prefs.setNotificationEnabled(!prefs.isNotificationEnabled());
+                boolean isNotificationsEnabled = !prefs.isNotificationEnabled();
+
+                if (isNotificationsEnabled) {
+                    startReminderNotifications();
+                } else {
+                    cancelReminderNotifications();
+                }
+
+                prefs.setNotificationEnabled(isNotificationsEnabled);
             }
         });
+    }
+
+    private void startReminderNotifications() {
+        // TODO
+        Log.d("SettingsActivity", "start reminders");
+    }
+
+    private void cancelReminderNotifications() {
+        // TODO
+        Log.d("SettingsActivity", "cancel reminders");
     }
 }
