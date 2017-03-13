@@ -10,4 +10,5 @@ public interface CounterzPrefs {
     boolean shouldUseBarChart();
 
     boolean isNotificationEnabled();
+    void setNotificationEnabled(boolean isNotificationEnabled);
 }

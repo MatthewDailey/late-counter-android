@@ -58,6 +58,12 @@ public class CounterzPrefsRoboTest extends AbstractRoboTest{
 
     @Test
     public void testNotificationsEnabled() {
+        assertThat(instance.isNotificationEnabled(), is(false));
+    }
+
+    @Test
+    public void testSetNotificationsEnabled() {
+        instance.setNotificationEnabled(true);
         assertThat(instance.isNotificationEnabled(), is(true));
     }
 }

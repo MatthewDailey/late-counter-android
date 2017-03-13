@@ -9,6 +9,7 @@ class CounterzPrefsImpl implements CounterzPrefs {
 
     public static final String PREMIUM_ENABLED_PREF = "premium_enabled";
     private static final String USE_BAR_CHART_PREF = "use_bar_chart";
+    private static final String IS_NOTIFICATION_ENABLED_PREF = "is_notifications_enabled";
     private final Context context;
 
     @Inject
@@ -47,6 +48,11 @@ class CounterzPrefsImpl implements CounterzPrefs {
 
     @Override
     public boolean isNotificationEnabled() {
-        return true;
+        return getPrefs().getBoolean(IS_NOTIFICATION_ENABLED_PREF, false);
+    }
+
+    @Override
+    public void setNotificationEnabled(boolean isNotificationEnabled) {
+        getPrefs().edit().putBoolean(IS_NOTIFICATION_ENABLED_PREF, isNotificationEnabled).commit();
     }
 }
