@@ -56,4 +56,8 @@ public class CounterzPrefsRoboTest extends AbstractRoboTest{
         assertThat(instance.shouldUseBarChart(), is(true));
     }
 
+    @Test
+    public void testNotificationsEnabled() {
+        assertThat(instance.isNotificationEnabled(), is(true));
+    }
 }

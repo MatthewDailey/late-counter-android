@@ -44,4 +44,9 @@ class CounterzPrefsImpl implements CounterzPrefs {
     public boolean shouldUseBarChart() {
         return getPrefs().getBoolean(USE_BAR_CHART_PREF, false);
     }
+
+    @Override
+    public boolean isNotificationEnabled() {
+        return true;
+    }
 }

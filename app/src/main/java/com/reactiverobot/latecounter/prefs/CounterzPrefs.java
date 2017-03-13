@@ -8,4 +8,6 @@ public interface CounterzPrefs {
 
     void setShouldUseBarChart(boolean shouldUseBarChart);
     boolean shouldUseBarChart();
+
+    boolean isNotificationEnabled();
 }
